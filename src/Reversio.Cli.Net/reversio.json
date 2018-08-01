@@ -1,0 +1,76 @@
+﻿{
+  "Jobs": [
+    {
+      "Provider": "System.Data.SqlClient",
+      "ConnectionString": "",
+      "Steps": [
+        {
+          "StepType": "Load",
+          "EntityTypes": [ "Table", "View" ],
+          "Schemas": [ "dbo" ],
+          "Exclude": {
+            "ExcludeExact": [],
+            "ExcludeRegex": []
+          }
+        },
+        {
+          "StepType": "PocoGenerate",
+          "Namespace": "",
+          "ClassAccessModifier": "public",
+          "ClassPartial": true,
+          "VirtualNavigationProperties": false,
+          "Usings": [],
+          "Extends": [],
+          "ClassNameReplace": [
+            {
+              "Regex": "^(vw_)",
+              "ReplaceWith": "Vw"
+            },
+            {
+              "Regex": "^(sp_)",
+              "ReplaceWith": ""
+            },
+            {
+              "Regex": "^(usp_)",
+              "ReplaceWith": ""
+            },
+            {
+              "Regex": "^(fn_)",
+              "ReplaceWith": ""
+            },
+            {
+              "Regex": "_",
+              "ReplaceWith": ""
+            }
+          ],
+          "ClassNameForceCamelCase": true,
+          "PropertyNameReplace": [
+            {
+              "Regex": "_",
+              "ReplaceWith": ""
+            }
+          ],
+          "PropertyNameForceCamelCase": true,
+          "PropertyNullableIfDefaultAndNotPk": false
+        },
+        {
+          "StepType": "PocoWrite",
+          "OutputPath": "./",
+          "CleanFolder": true,
+          "Exclude": {
+            "ExcludeExact": [],
+            "ExcludeRegex": []
+          }
+        },
+        {
+          "StepType": "DbContext",
+          "OutputPath": "./MyDbContext.cs",
+          "Namespace": "",
+          "ClassName": "MyDbContext",
+          "Extends": [ "MyDbContext" ],
+          "IncludeIndices": true
+        }
+      ]
+    }
+  ]
+}

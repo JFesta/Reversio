@@ -1,0 +1,241 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="COLUMNS_SELECT" xml:space="preserve">
+    <value>SELECT  C.[TABLE_SCHEMA] AS [Schema],
+        C.[TABLE_NAME] AS [TableName],
+        C.[COLUMN_NAME] AS [Name],
+        C.[ORDINAL_POSITION] AS [Position],
+        C.[COLUMN_DEFAULT] AS [Default],
+        (CASE WHEN C.[IS_NULLABLE] = 'YES' THEN 1 ELSE 0 END) AS [IsNullable],
+        LOWER(C.[DATA_TYPE]) AS [DataType],
+        C.[CHARACTER_MAXIMUM_LENGTH] AS [CharacterMaximumLength],
+        C.[NUMERIC_PRECISION] AS [NumericPrecision],
+        C.[NUMERIC_SCALE] AS [NumericScale],
+        C.[DATETIME_PRECISION] AS [DateTimePrecision]
+FROM    INFORMATION_SCHEMA.COLUMNS C
+WHERE   C.[TABLE_NAME] NOT IN ('EdmMetadata', '__MigrationHistory', '__RefactorLog')
+        AND C.[TABLE_NAME] NOT LIKE 'sysdiagram%'</value>
+  </data>
+  <data name="COLUMNS_SELECT_BY_TABLE" xml:space="preserve">
+    <value>SELECT DISTINCT
+    FK.[CONSTRAINT_NAME] AS [Name],
+	FK.[ORDINAL_POSITION] AS [Position],
+	FK.[TABLE_SCHEMA] AS [FkSchema],
+    FK.[TABLE_NAME] AS [FkTable],
+    FK.[COLUMN_NAME] AS [FkColumn],
+	PK.[TABLE_SCHEMA] AS [PkSchema],
+    PK.[TABLE_NAME] AS [PkTable],
+    PK.[COLUMN_NAME] AS [PkColumn],
+    CASE WHEN C.[DELETE_RULE] = 'CASCADE' THEN 1 ELSE 0 END AS [DeleteCascade]
+FROM
+	INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS AS C
+    INNER JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE AS FK 
+		ON FK.CONSTRAINT_NAME = C.CONSTRAINT_NAME
+    INNER JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE AS PK
+        ON PK.CONSTRAINT_NAME = C.UNIQUE_CONSTRAINT_NAME
+		AND PK.ORDINAL_POSITION = FK.ORDINAL_POSITION
+ORDER BY FK.TABLE_NAME, FK.COLUMN_NAME</value>
+  </data>
+  <data name="FOREIGN_KEYS_SELECT" xml:space="preserve">
+    <value>SELECT DISTINCT
+    C.CONSTRAINT_SCHEMA AS [Schema],
+    C.[CONSTRAINT_NAME] AS [Name],
+	FK.[TABLE_SCHEMA] AS [FkSchema],
+    FK.[TABLE_NAME] AS [FkTableName],
+    FK.[COLUMN_NAME] AS [FkColumn],
+	PK.[TABLE_SCHEMA] AS [PkSchema],
+    PK.[TABLE_NAME] AS [PkTableName],
+    PK.[COLUMN_NAME] AS [PkColumn],
+	C.[UPDATE_RULE] AS [UpdateRuleStr],
+	C.[DELETE_RULE] AS [DeleteRuleStr]
+FROM
+	INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS AS C
+    INNER JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE AS FK 
+		ON FK.CONSTRAINT_NAME = C.CONSTRAINT_NAME
+    INNER JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE AS PK
+        ON PK.CONSTRAINT_NAME = C.UNIQUE_CONSTRAINT_NAME
+		AND PK.ORDINAL_POSITION = FK.ORDINAL_POSITION
+ORDER BY FK.TABLE_NAME, FK.COLUMN_NAME</value>
+  </data>
+  <data name="FOREIGN_KEY_COLUMNS_SELECT" xml:space="preserve">
+    <value>SELECT DISTINCT
+    C.CONSTRAINT_SCHEMA AS [Schema],
+    C.[CONSTRAINT_NAME] AS [Name],
+	FK.[ORDINAL_POSITION] AS [Position],
+	FK.[TABLE_SCHEMA] AS [FkSchemaName],
+    FK.[TABLE_NAME] AS [FkTableName],
+    FK.[COLUMN_NAME] AS [FkColumnName],
+	PK.[TABLE_SCHEMA] AS [PkSchemaName],
+    PK.[TABLE_NAME] AS [PkTableName],
+    PK.[COLUMN_NAME] AS [PkColumnName]
+FROM
+	INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS AS C
+    INNER JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE AS FK 
+		ON FK.CONSTRAINT_NAME = C.CONSTRAINT_NAME
+    INNER JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE AS PK
+        ON PK.CONSTRAINT_NAME = C.UNIQUE_CONSTRAINT_NAME
+		AND PK.ORDINAL_POSITION = FK.ORDINAL_POSITION
+ORDER BY FK.TABLE_NAME, FK.COLUMN_NAME</value>
+  </data>
+  <data name="INDEX_COLUMNS_SELECT" xml:space="preserve">
+    <value>SELECT DISTINCT
+	IND.[name] AS IndexName,
+	SCHEMA_NAME(T.SCHEMA_ID) AS TableSchema,
+    T.[name] AS TableName,
+    IC.[key_ordinal] AS Position,
+    COL.[name] AS ColumnName
+FROM sys.tables T
+INNER JOIN sys.indexes IND
+    ON IND.object_id = T.object_id
+INNER JOIN sys.index_columns IC
+    ON IND.object_id = IC.object_id AND IND.index_id = IC.index_id
+INNER JOIN sys.columns COL
+    ON ic.object_id = COL.object_id AND IC.column_id = COL.column_id
+WHERE T.[is_ms_shipped] = 0
+    AND IND.[ignore_dup_key] = 0
+    AND IC.[key_ordinal] &gt; 0
+    AND T.[name] NOT LIKE 'sysdiagram%'</value>
+  </data>
+  <data name="INDICES_SELECT" xml:space="preserve">
+    <value>SELECT DISTINCT
+	IND.[name] AS IndexName,
+	SCHEMA_NAME(T.SCHEMA_ID) AS TableSchema,
+    T.[name] AS TableName,
+    IND.[is_unique] AS IsUnique,
+    IND.[is_primary_key] AS IsPrimaryKey,
+    IND.[is_unique_constraint] AS IsUniqueConstraint
+FROM sys.tables T
+INNER JOIN sys.indexes IND
+    ON IND.object_id = T.object_id
+WHERE T.[is_ms_shipped] = 0
+    AND IND.[ignore_dup_key] = 0
+    AND T.[name] NOT LIKE 'sysdiagram%'</value>
+  </data>
+  <data name="TABLES_SELECT" xml:space="preserve">
+    <value>SELECT
+	[TABLE_CATALOG] AS [Catalog],
+	[TABLE_SCHEMA] AS [Schema],
+	[TABLE_NAME] AS [Name],
+	[TABLE_TYPE] AS [Type]
+FROM INFORMATION_SCHEMA.TABLES
+WHERE [TABLE_NAME] NOT IN ('EdmMetadata', '__MigrationHistory', '__RefactorLog')
+AND [TABLE_NAME] NOT LIKE 'sysdiagram%'</value>
+  </data>
+</root>

@@ -1,0 +1,252 @@
+﻿using Reversio.Core;
+using Reversio.Core.Logging;
+using Reversio.Core.Settings;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+
+namespace Reversio.Cli
+{
+    public class CommandLineInterface
+    {
+        private bool _verbose = false;
+        private List<string> _settingPaths;
+
+        private List<Job> _jobs;
+
+        public void Execute(string[] args)
+        {
+            ParseArgs(args);
+            Init();
+
+            try
+            {
+                if (!LoadJobs()) return;
+                LaunchJobs();
+            }
+            catch (Exception err)
+            {
+                if (_verbose)
+                    Log.Error(err.ToString());
+                else
+                    Log.Error(err.Message);
+            }
+        }
+
+        private void ParseArgs(string[] args)
+        {
+            _settingPaths = new List<string>();
+            foreach (var arg in args)
+            {
+                if (ParseArg(arg))
+                    _settingPaths.Add(arg);
+            }
+        }
+
+        private bool ParseArg(string arg)
+        {
+            if (arg.Equals("-v", StringComparison.InvariantCultureIgnoreCase) || arg.Equals("--verbose", StringComparison.InvariantCultureIgnoreCase))
+            {
+                _verbose = true;
+                return false;
+            }
+            return true;
+        }
+
+        private void Init()
+        {
+            Log.Logger = new ConsoleLogger(_verbose ? 1 : 3, _verbose);
+
+        }
+
+        private bool LoadJobs()
+        {
+            if (_settingPaths == null || !_settingPaths.Any())
+            {
+                Log.Warning("No json settings path specified");
+                return false;
+            }
+
+            Log.Information(String.Format("Parsing {0} setting files", _settingPaths.Count()));
+            foreach (var inputPath in _settingPaths)
+            {
+                var path = Path.GetFullPath(inputPath);
+                Log.Debug(String.Format("Parsing file {0}", path));
+                var settings = Newtonsoft.Json.JsonConvert.DeserializeObject<JsonSettings>(File.ReadAllText(path));
+
+                _jobs = new List<Job>();
+                int i = 1;
+                Log.Debug(String.Format("Parsing job #{0}", i));
+                foreach (var jsonJob in settings.Jobs)
+                {
+                    int state = 0;
+                    bool preDbContext = false;
+                    var job = new Job()
+                    {
+                        SettingsFile = path,
+                        WorkingDirectory = Path.GetDirectoryName(path),
+                        Provider = jsonJob.Provider,
+                        ConnectionString = jsonJob.ConnectionString
+                    };
+                    foreach (var step in jsonJob.Steps)
+                    {
+                        Log.Debug(String.Format("Parsing step: {0}", step.StepType));
+                        if (state == -1)
+                        {
+                            Log.Warning("Invalid step: no step is allowed after DbContext");
+                            return false;
+                        }
+                        switch (step.StepType.ToLowerInvariant())
+                        {
+                            case "load":
+                                if (state != 0 && state != 1)
+                                {
+                                    Log.Warning("Invalid Load Step: unallowed position in step flow");
+                                    return false;
+                                }
+                                var loadStep = new LoadStep()
+                                {
+                                    EntityTypes = step.EntityTypes.Select(s => s?.ToLowerInvariant()),
+                                    Schemas = step.Schemas?.Select(s => s?.ToLowerInvariant()),
+                                    Exclude = step.Exclude.Convert()
+                                };
+                                if (!ValidateStep(loadStep))
+                                    return false;
+                                job.Steps.Add(loadStep);
+                                state = 1;
+                                break;
+                            case "pocogenerate":
+                                if (state != 1)
+                                {
+                                    Log.Warning("Invalid PocoGenerate Step: unallowed position in step flow");
+                                    return false;
+                                }
+                                var pocoGenerateStep = new PocoGenerateStep()
+                                {
+                                    Namespace = step.Namespace,
+                                    ClassAccessModifier = step.ClassAccessModifier,
+                                    ClassPartial = step.ClassPartial,
+                                    VirtualNavigationProperties = step.VirtualNavigationProperties,
+                                    Usings = step.Usings,
+                                    Extends = step.Extends,
+                                    ClassNameForceCamelCase = step.ClassNameForceCamelCase,
+                                    ClassNameReplace = step.ClassNameReplace.Select(c => c.Convert()),
+                                    PropertyNameForceCamelCase = step.PropertyNameForceCamelCase,
+                                    PropertyNameReplace = step.PropertyNameReplace.Select(c => c.Convert()),
+                                    PropertyNullableIfDefaultAndNotPk = step.PropertyNullableIfDefaultAndNotPk
+                                };
+                                job.Steps.Add(pocoGenerateStep);
+                                state = 2;
+                                break;
+                            case "pocowrite":
+                                if (state != 2)
+                                {
+                                    Log.Warning("Invalid PocoWrite Step: unallowed position in step flow");
+                                    return false;
+                                }
+                                var pocoWriteStep = new PocoWriteStep()
+                                {
+                                    OutputPath = step.OutputPath,
+                                    CleanFolder = step.CleanFolder,
+                                    PocosExclude = step.Exclude.Convert()
+                                };
+                                job.Steps.Add(pocoWriteStep);
+                                if (!ValidateStep(pocoWriteStep))
+                                    return false;
+                                state = 0;
+                                preDbContext = true;
+                                break;
+                            case "dbcontext":
+                                if (state != 0 || !preDbContext)
+                                {
+                                    Log.Warning("Invalid DbContext Step: unallowed position in step flow");
+                                    return false;
+                                }
+                                var dbContextStep = new DbContextStep()
+                                {
+                                    OutputPath = step.OutputPath,
+                                    Namespace = step.Namespace,
+                                    ClassName = step.ClassName,
+                                    Extends = step.Extends,
+                                    IncludeIndices = step.IncludeIndices
+                                };
+                                if (!ValidateStep(dbContextStep))
+                                    return false;
+                                job.Steps.Add(dbContextStep);
+                                state = -1;
+                                break;
+                        }
+                    }
+                    if (!ValidateJob(job))
+                        return false;
+
+                    _jobs.Add(job);
+                    i++;
+                }
+            }
+            Log.Information(String.Format("Loaded {0} jobs", _settingPaths.Count()));
+            return true;
+        }
+
+        private bool ValidateJob(Job job)
+        {
+            //ConnectionString
+            if (String.IsNullOrWhiteSpace(job.ConnectionString))
+            {
+                Log.Warning("Invalid job: empty ConnectionString");
+                return false;
+            }
+            return true;
+        }
+
+        private bool ValidateStep(LoadStep step)
+        {
+            if (step.EntityTypes == null || !step.EntityTypes.Any())
+            {
+                Log.Warning("Invalid Load step: at least one Entity Type is mandatory");
+                return false;
+            }
+            return true;
+        }
+
+        private bool ValidateStep(PocoWriteStep step)
+        {
+            if (String.IsNullOrWhiteSpace(step.OutputPath))
+            {
+                Log.Warning("Invalid PocoWrite step: empty OutputPath");
+                return false;
+            }
+            return true;
+        }
+
+        private bool ValidateStep(DbContextStep step)
+        {
+            if (String.IsNullOrWhiteSpace(step.OutputPath))
+            {
+                Log.Warning("Invalid DbContextStep step: empty OutputPath");
+                return false;
+            }
+            if (String.IsNullOrWhiteSpace(step.ClassName))
+            {
+                Log.Warning("Invalid DbContextStep step: empty ClassName");
+                return false;
+            }
+            return true;
+        }
+
+        private bool LaunchJobs()
+        {
+            int i = 1;
+            foreach (var job in _jobs)
+            {
+                Log.Information(String.Format("Launching job #{0} from settings file {1}", i, job.SettingsFile));
+                Directory.SetCurrentDirectory(job.WorkingDirectory);
+                var engine = new ReversioEngine(job);
+                engine.Execute();
+                i++;
+            }
+            return true;
+        }
+    }
+}
