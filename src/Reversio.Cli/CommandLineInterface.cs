@@ -1,10 +1,27 @@
-﻿using Reversio.Core;
+﻿/*
+ * Copyright 2018 Jacopo Festa 
+ * This file is part of Reversio.
+ * Reversio is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * Reversio is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with Reversio. If not, see <http://www.gnu.org/licenses/>.
+*/
+
+using Reversio.Core;
 using Reversio.Core.Logging;
 using Reversio.Core.Settings;
+using Reversio.Core.Utils;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 
 namespace Reversio.Cli
 {
@@ -17,6 +34,12 @@ namespace Reversio.Cli
 
         public void Execute(string[] args)
         {
+            if (!args.Any() || args.First().Equals("help", StringComparison.InvariantCultureIgnoreCase))
+            {
+                Help();
+                return;
+            }
+
             ParseArgs(args);
             Init();
 
@@ -57,7 +80,6 @@ namespace Reversio.Cli
         private void Init()
         {
             Log.Logger = new ConsoleLogger(_verbose ? 1 : 3, _verbose);
-
         }
 
         private bool LoadJobs()
@@ -247,6 +269,17 @@ namespace Reversio.Cli
                 i++;
             }
             return true;
+        }
+
+        private void Help()
+        {
+            Console.WriteLine("Reversio v. {0} - Entity Framework Core Reverse-Engineering Tool ({1})", 
+                Assembly.GetEntryAssembly().GetName().Version, InfoText.ProjectUrl);
+            Console.WriteLine("{0} - Licensed under the GNU Lesser General Public License v3.0 (https://github.com/JFesta/Reversio/blob/master/LICENSE)", InfoText.Copyright);
+            Console.WriteLine("This program executes processing jobs defined in one or more json-formatted settings files");
+            Console.WriteLine("Usage: Reversio.exe [options] settings-path...");
+            Console.WriteLine("options:");
+            Console.WriteLine("\t-v, --verbose: prints out more detailed processing informations");
         }
     }
 }

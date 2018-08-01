@@ -15,34 +15,22 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+using System.Reflection;
 using System.Text;
 
 namespace Reversio.Core.Utils
 {
-    public static class PathUtils
+    public static class InfoText
     {
-        private static string[] _separators = new[] { "\\", "/" };
-
-        public static bool IsAbsolutePath(string path)
-        {
-            return Path.IsPathRooted(path)
-                && !Path.GetPathRoot(path).Equals(Path.DirectorySeparatorChar.ToString(), StringComparison.Ordinal);
-        }
-
-        public static bool IsDirectory(string path)
-        {
-            if (Directory.Exists(path))
-                return true;
-
-            if (File.Exists(path))
-                return false;
-            
-            if (_separators.Any(x => path.EndsWith(x)))
-                return true;
-            
-            return String.IsNullOrWhiteSpace(Path.GetExtension(path));
-        }
+        public const string ProjectUrl = @"https://github.com/JFesta/Reversio";
+        public const string Copyright = @"Copyright 2018 Jacopo Festa";
+        public static string GeneratedCodeText = String.Join(Environment.NewLine,
+            new string[]
+            {
+            "// ------------------------------------------------------------------------------------------------",
+            String.Format("// This code was generated with Reversio ({0}).", ProjectUrl),
+            String.Format("// Version {0}", Assembly.GetEntryAssembly().GetName().Version),
+            "// ------------------------------------------------------------------------------------------------"
+            });
     }
 }
