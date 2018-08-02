@@ -13,13 +13,13 @@ Key features:
 * Support for Lazy Loading: you can generate navigation properties as *virtual members*
 * Indices: you can optionally include their definition in your DbContext
 
-# Supported DBMSs/ORMs
+## Supported DBMSs/ORMs
 At the moment Reversio supports only Sql Server databases (tested with 2012 and 2016).
 The generated DbContext is tailored specifically to EF Core, but a second version for EF can be done too if needed.
 
 However, as the generated POCOs carry no dependencies by default, you may use Reversio to just generate them and not the DbContext; in this way you can use the generated POCOs with any other ORM, such as Dapper.
 
-# Usage
+## Usage
 Just launch the Console App from Powershell, CMD or the Visual Studio Console. Otherwise, you can use the core libraries programmatically.
 * Help: `Reversio.exe` or `Reversio.exe help`
 * Reverse Engineer: `Reversio.exe [options] settings-path...`
@@ -27,11 +27,13 @@ Just launch the Console App from Powershell, CMD or the Visual Studio Console. O
 * Options:
   * `-v, --verbose`: prints out more detailed processing informations
 
-# Dependencies
+Some json settings examples can be found in the [examples](https://github.com/JFesta/Reversio/tree/master/examples) folder. Detailed info about file structure, jobs, options etc. can be found on the [Wiki](https://github.com/JFesta/Reversio/wiki).
+
+## Dependencies
 The released Console App requires .NET Framework >= 4.6.2.
 Core libraries require .Net Standard 2.0.
 
-# What's next
+## What's next
 ### Planned features:
 * Ship as a Visual Studio Extension
 * Automatically ignore history tables connected to temporal tables
@@ -41,4 +43,4 @@ Core libraries require .Net Standard 2.0.
 ### Possible next features:
 * Support for MySql
 * Support for Oracle
-* Dacpac as a source
+* Use a .dacpac as a source
