@@ -20,6 +20,8 @@ The generated DbContext is tailored specifically to EF Core, but an alternate ve
 However, as the generated POCOs carry no dependencies by default, you may use Reversio to just generate them and not the DbContext; in this way you can use the generated POCOs with any other ORM, such as Dapper.
 
 ## Usage
+Latest release: download [HERE](https://github.com/JFesta/Reversio/releases)
+
 Just launch the Console App from Powershell, CMD or the Visual Studio Console. Otherwise, you can use the core libraries programmatically.
 * Help: `Reversio.exe` or `Reversio.exe help`
 * Reverse Engineer: `Reversio.exe [options] settings-path...`
