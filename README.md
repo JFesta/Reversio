@@ -23,7 +23,7 @@ However, as the generated POCOs carry no dependencies by default, you may use Re
 Just launch the Console App from Powershell, CMD or the Visual Studio Console. Otherwise, you can use the core libraries programmatically.
 * Help: `Reversio.exe` or `Reversio.exe help`
 * Reverse Engineer: `Reversio.exe [options] settings-path...`
-* Generate an empty json settings file sample: `Reversio.exe {-e|--example} output-path`
+* Generate an empty json settings file sample: `Reversio.exe {-e|--example}`
 * Options:
   * `-v, --verbose`: prints out more detailed processing informations
 
@@ -41,3 +41,4 @@ Core libraries require .Net Standard 2.0.
 ### Possible next features:
 * Support for MySql
 * Support for Oracle
+* Dacpac as a source
