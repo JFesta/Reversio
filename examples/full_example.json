@@ -6,10 +6,19 @@
       "Steps": [
         {
           "StepType": "Load",
-          "EntityTypes": [ "Table", "View" ],
-          "Schemas": [],
+          "EntityTypes": [ "Table" ],
+          "Schemas": [ "dbo" ],
           "Exclude": {
             "ExcludeExact": [],
+            "ExcludeRegex": [ "^(AspNet)", "^(Log)", "^(BKP_)" ]
+          }
+        },
+		{
+          "StepType": "Load",
+          "EntityTypes": [ "View" ],
+          "Schemas": [ "dbo" ],
+          "Exclude": {
+            "ExcludeExact": [ "dbo.ViewToExclude" ],
             "ExcludeRegex": []
           }
         },
@@ -21,7 +30,28 @@
           "VirtualNavigationProperties": false,
           "Usings": [],
           "Extends": [],
-          "ClassNameReplace": [],
+          "ClassNameReplace": [
+            {
+              "Regex": "^(vw_)",
+              "ReplaceWith": "Vw"
+            },
+            {
+              "Regex": "^(sp_)",
+              "ReplaceWith": ""
+            },
+            {
+              "Regex": "^(usp_)",
+              "ReplaceWith": ""
+            },
+            {
+              "Regex": "^(fn_)",
+              "ReplaceWith": ""
+            },
+            {
+              "Regex": "_",
+              "ReplaceWith": ""
+            }
+          ],
           "ClassNameForcePascalCase": true,
           "PropertyNameReplace": [
             {
