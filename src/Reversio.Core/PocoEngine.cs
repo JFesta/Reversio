@@ -352,7 +352,7 @@ namespace Reversio.Core
         private void CleanDirectoryContent(string path)
         {
             var dir = new DirectoryInfo(path);
-            foreach (FileInfo file in dir.GetFiles())
+            foreach (FileInfo file in dir.GetFiles("*.cs", SearchOption.TopDirectoryOnly))
             {
                 file.Delete();
             }

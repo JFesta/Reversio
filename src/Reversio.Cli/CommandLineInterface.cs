@@ -163,6 +163,8 @@ namespace Reversio.Cli
                                     PropertyNameReplace = step.PropertyNameReplace.Select(c => c.Convert()),
                                     PropertyNullableIfDefaultAndNotPk = step.PropertyNullableIfDefaultAndNotPk
                                 };
+                                if (!ValidateStep(pocoGenerateStep))
+                                    return false;
                                 job.Steps.Add(pocoGenerateStep);
                                 state = 2;
                                 break;
@@ -178,9 +180,9 @@ namespace Reversio.Cli
                                     CleanFolder = step.CleanFolder,
                                     PocosExclude = step.Exclude.Convert()
                                 };
-                                job.Steps.Add(pocoWriteStep);
                                 if (!ValidateStep(pocoWriteStep))
                                     return false;
+                                job.Steps.Add(pocoWriteStep);
                                 state = 0;
                                 preDbContext = true;
                                 break;
@@ -237,6 +239,16 @@ namespace Reversio.Cli
             return true;
         }
 
+        private bool ValidateStep(PocoGenerateStep step)
+        {
+            if (String.IsNullOrWhiteSpace(step.Namespace))
+            {
+                Log.Warning("Invalid PocoWrite step: empty Namespace");
+                return false;
+            }
+            return true;
+        }
+
         private bool ValidateStep(PocoWriteStep step)
         {
             if (String.IsNullOrWhiteSpace(step.OutputPath))
@@ -257,6 +269,11 @@ namespace Reversio.Cli
             if (String.IsNullOrWhiteSpace(step.ClassName))
             {
                 Log.Warning("Invalid DbContextStep step: empty ClassName");
+                return false;
+            }
+            if (String.IsNullOrWhiteSpace(step.Namespace))
+            {
+                Log.Warning("Invalid DbContextStep step: empty Namespace");
                 return false;
             }
             return true;
