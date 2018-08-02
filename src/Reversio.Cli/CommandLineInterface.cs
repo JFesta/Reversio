@@ -152,9 +152,9 @@ namespace Reversio.Cli
                                     VirtualNavigationProperties = step.VirtualNavigationProperties,
                                     Usings = step.Usings,
                                     Extends = step.Extends,
-                                    ClassNameForceCamelCase = step.ClassNameForceCamelCase,
+                                    ClassNameForcePascalCase = step.ClassNameForcePascalCase,
                                     ClassNameReplace = step.ClassNameReplace.Select(c => c.Convert()),
-                                    PropertyNameForceCamelCase = step.PropertyNameForceCamelCase,
+                                    PropertyNameForcePascalCase = step.PropertyNameForcePascalCase,
                                     PropertyNameReplace = step.PropertyNameReplace.Select(c => c.Convert()),
                                     PropertyNullableIfDefaultAndNotPk = step.PropertyNullableIfDefaultAndNotPk
                                 };

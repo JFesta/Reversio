@@ -60,8 +60,8 @@ namespace Reversio.Core
                 
                 //name replace & resolve
                 poco.Name = Replace(settings.ClassNameReplace, poco.Name);
-                if (settings.ClassNameForceCamelCase)
-                    poco.Name = ToCamelCase(poco.Name);
+                if (settings.ClassNameForcePascalCase)
+                    poco.Name = ToPascalCase(poco.Name);
                 ResolvePocoName(pocos, poco);
 
                 Log.Debug(String.Format("POCO {0} - Assigned name: {1}", entity.Name, poco.Name));
@@ -78,8 +78,8 @@ namespace Reversio.Core
                     column.PocoProperty = property;
 
                     property.Name = Replace(settings.PropertyNameReplace, property.Name);
-                    if (settings.PropertyNameForceCamelCase)
-                        property.Name = ToCamelCase(property.Name);
+                    if (settings.PropertyNameForcePascalCase)
+                        property.Name = ToPascalCase(property.Name);
                     property.Name = ResolvePropertyName(poco, property, "Property");
 
                     poco.BaseProperties.Add(property);
@@ -265,8 +265,8 @@ namespace Reversio.Core
                 name = fk.FkTable.Poco.Name;
             }
 
-            if (settings.PropertyNameForceCamelCase)
-                name = ToCamelCase(name);
+            if (settings.PropertyNameForcePascalCase)
+                name = ToPascalCase(name);
             if (name.StartsWith("fk_", StringComparison.InvariantCultureIgnoreCase))
                 name = name.Substring(3);
             name = name.Replace("_", String.Empty);
@@ -296,7 +296,7 @@ namespace Reversio.Core
             return name;
         }
 
-        private string ToCamelCase(string input)
+        private string ToPascalCase(string input)
         {
             if (String.IsNullOrWhiteSpace(input))
                 return input;
@@ -304,6 +304,8 @@ namespace Reversio.Core
             var array = input.ToCharArray();
             int start = -1;
 
+            if (Char.IsLower(array[0]))
+                array[0] = Char.ToUpperInvariant(array[0]);
             for (int i = 0; i < array.Length; i++)
             {
                 if (Char.IsUpper(array[i]))

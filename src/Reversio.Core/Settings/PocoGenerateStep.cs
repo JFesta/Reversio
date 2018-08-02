@@ -27,9 +27,9 @@ namespace Reversio.Core.Settings
         public bool VirtualNavigationProperties { get; set; }
         public IEnumerable<string> Usings { get; set; }
         public IEnumerable<string> Extends { get; set; }
-        public bool ClassNameForceCamelCase { get; set; }
+        public bool ClassNameForcePascalCase { get; set; }
         public IEnumerable<NameReplaceRegex> ClassNameReplace { get; set; }
-        public bool PropertyNameForceCamelCase { get; set; }
+        public bool PropertyNameForcePascalCase { get; set; }
         public IEnumerable<NameReplaceRegex> PropertyNameReplace { get; set; }
         public bool PropertyNullableIfDefaultAndNotPk { get; set; }
     }

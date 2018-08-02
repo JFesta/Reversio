@@ -43,14 +43,14 @@
               "ReplaceWith": ""
             }
           ],
-          "ClassNameForceCamelCase": true,
+          "ClassNameForcePascalCase": true,
           "PropertyNameReplace": [
             {
               "Regex": "_",
               "ReplaceWith": ""
             }
           ],
-          "PropertyNameForceCamelCase": true,
+          "PropertyNameForcePascalCase": true,
           "PropertyNullableIfDefaultAndNotPk": false
         },
         {

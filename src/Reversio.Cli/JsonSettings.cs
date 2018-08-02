@@ -47,9 +47,9 @@ namespace Reversio.Cli
         public bool VirtualNavigationProperties { get; set; }
         public List<string> Usings { get; set; }
         public List<string> Extends { get; set; }
-        public bool ClassNameForceCamelCase { get; set; }
+        public bool ClassNameForcePascalCase { get; set; }
         public List<JsonNameReplaceRegex> ClassNameReplace { get; set; }
-        public bool PropertyNameForceCamelCase { get; set; }
+        public bool PropertyNameForcePascalCase { get; set; }
         public List<JsonNameReplaceRegex> PropertyNameReplace { get; set; }
         public bool PropertyNullableIfDefaultAndNotPk { get; set; }
 
