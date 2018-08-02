@@ -286,7 +286,7 @@ namespace Reversio.Cli
             Console.WriteLine("\tReverse engineering:");
             Console.WriteLine("\t\tReversio.exe [options] settings-path...");
             Console.WriteLine("\tGenerate an example json settings file:");
-            Console.WriteLine("\t\tReversio.exe {-e|--example} output-path");
+            Console.WriteLine("\t\tReversio.exe {-e|--example}");
             Console.WriteLine("options:");
             Console.WriteLine("\t-v, --verbose: prints out more detailed processing informations");
         }
