@@ -15,7 +15,7 @@ Key features:
 
 ## Supported DBMSs/ORMs
 At the moment Reversio supports only Sql Server databases (tested with 2012 and 2016).
-The generated DbContext is tailored specifically to EF Core, but a second version for EF can be done too if needed.
+The generated DbContext is tailored specifically to EF Core, but an alternate version for EF can be done too if requested.
 
 However, as the generated POCOs carry no dependencies by default, you may use Reversio to just generate them and not the DbContext; in this way you can use the generated POCOs with any other ORM, such as Dapper.
 
@@ -32,6 +32,11 @@ Some json settings examples can be found in the [examples](https://github.com/JF
 ## Dependencies
 The released Console App requires .NET Framework >= 4.6.2.
 Core libraries require .Net Standard 2.0.
+
+## Warning
+Use at your own risk. As this application can delete/overwrite source files, it is highly recommended to use it only against source-controlled or otherwise properly backuped code.
+
+Some commercial antiviruses can be triggered to scan the executable when you launch it, despite it being (mostly) harmless.
 
 ## What's next
 ### Planned features:
