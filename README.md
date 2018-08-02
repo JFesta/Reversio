@@ -13,4 +13,25 @@ Key features:
 * Support for Lazy Loading: you can generate navigation properties as **virtual** members
 * Indices: you can optionally include their definition in your DbContext
 
-Currently Reversio supports only Sql Server databases (tested with 2012 and 2016).
+# Supported DBMSs/ORMs
+
+At the moment Reversio supports only Sql Server databases (tested with 2012 and 2016).
+The generated DbContext is tailored specifically to EF Core, but a second version for EF can be done too if needed.
+
+However, as the generated POCOs carry no dependencies by default, you can use Reversio to just generate them and not the DbContext; in this way you can use the POCOs with other ORMs, such as Dapper.
+
+# Dependencies
+
+Work in progress
+
+# What's next
+
+### Planned features:
+* Automatically ignore history tables connected to temporal tables
+* DbContext stubs to let custom code injections
+* Support for Query Types 
+* Support for scalar/table functions and stored procedures
+
+### Possible next features:
+* Support for MySql
+* Support for Oracle
