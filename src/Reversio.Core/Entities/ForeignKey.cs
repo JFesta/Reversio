@@ -25,10 +25,10 @@ namespace Reversio.Core.Entities
         public string Schema { get; set; }
         public string Name { get; set; }
 
-        public string FkSchema { get; set; }
+        public string FkSchemaName { get; set; }
         public string FkTableName { get; set; }
 
-        public string PkSchema { get; set; }
+        public string PkSchemaName { get; set; }
         public string PkTableName { get; set; }
         
         public string UpdateRuleStr { get; set; }

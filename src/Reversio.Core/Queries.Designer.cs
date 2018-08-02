@@ -127,18 +127,16 @@ namespace Reversio.Core {
         ///   Looks up a localized string similar to SELECT DISTINCT
         ///    C.CONSTRAINT_SCHEMA AS [Schema],
         ///    C.[CONSTRAINT_NAME] AS [Name],
-        ///	FK.[TABLE_SCHEMA] AS [FkSchema],
+        ///	FK.[TABLE_SCHEMA] AS [FkSchemaName],
         ///    FK.[TABLE_NAME] AS [FkTableName],
-        ///    FK.[COLUMN_NAME] AS [FkColumn],
-        ///	PK.[TABLE_SCHEMA] AS [PkSchema],
-        ///    PK.[TABLE_NAME] AS [PkTableName],
-        ///    PK.[COLUMN_NAME] AS [PkColumn],
-        ///	C.[UPDATE_RULE] AS [UpdateRuleStr],
-        ///	C.[DELETE_RULE] AS [DeleteRuleStr]
+        ///	PK.[TABLE_SCHEMA] AS [PkSchemaName],
+        ///    PK.[TABLE_NAME] AS [PkTableName]
         ///FROM
         ///	INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS AS C
         ///    INNER JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE AS FK 
-        ///		ON FK.C [rest of string was truncated]&quot;;.
+        ///		ON FK.CONSTRAINT_NAME = C.CONSTRAINT_NAME
+        ///    INNER JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE AS PK
+        ///        ON PK.CONSTRAINT_NAME = C.UNIQUE_CONSTRA [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string FOREIGN_KEYS_SELECT {
             get {

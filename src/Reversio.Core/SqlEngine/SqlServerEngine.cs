@@ -85,8 +85,8 @@ namespace Reversio.Core.SqlEngine
             //linking foreign keys + foreign key columns
             foreach (var foreignKey in foreignKeys)
             {
-                var fkTable = _context.FirstOrDefault(e => e.Schema == foreignKey.FkSchema && e.Name == foreignKey.FkTableName);
-                var pkTable = _context.FirstOrDefault(e => e.Schema == foreignKey.PkSchema && e.Name == foreignKey.PkTableName);
+                var fkTable = _context.FirstOrDefault(e => e.Schema == foreignKey.FkSchemaName && e.Name == foreignKey.FkTableName);
+                var pkTable = _context.FirstOrDefault(e => e.Schema == foreignKey.PkSchemaName && e.Name == foreignKey.PkTableName);
                 if (fkTable != null && pkTable != null)
                 {
                     foreignKey.FkTable = fkTable;
