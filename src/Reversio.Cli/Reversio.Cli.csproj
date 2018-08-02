@@ -18,13 +18,20 @@
     <RepositoryUrl>https://github.com/JFesta/Reversio</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>
     <PackageTags />
-    <Version>0.9.0</Version>
-    <FileVersion>0.9.0</FileVersion>
-    <AssemblyVersion>0.9.0</AssemblyVersion>
+    <Version>0.9.1</Version>
+    <FileVersion>0.9.1</FileVersion>
+    <AssemblyVersion>0.9.1</AssemblyVersion>
   </PropertyGroup>
 
   <ItemGroup>
     <None Remove="Reversio.Cli.csproj.vspscc" />
+    <None Remove="reversio.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="reversio.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>

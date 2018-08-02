@@ -39,6 +39,11 @@ namespace Reversio.Cli
                 Help();
                 return;
             }
+            if (args.Contains("-e", StringComparer.InvariantCultureIgnoreCase) || args.Contains("--example", StringComparer.InvariantCultureIgnoreCase))
+            {
+                GenerateExampleFile();
+                return;
+            }
 
             ParseArgs(args);
             Init();
@@ -277,9 +282,32 @@ namespace Reversio.Cli
                 Assembly.GetEntryAssembly().GetName().Version, InfoText.ProjectUrl);
             Console.WriteLine("{0} - Licensed under the GNU Lesser General Public License v3.0 (https://github.com/JFesta/Reversio/blob/master/LICENSE)", InfoText.Copyright);
             Console.WriteLine("This program executes processing jobs defined in one or more json-formatted settings files");
-            Console.WriteLine("Usage: Reversio.exe [options] settings-path...");
+            Console.WriteLine("Usage:");
+            Console.WriteLine("\tReverse engineering:");
+            Console.WriteLine("\t\tReversio.exe [options] settings-path...");
+            Console.WriteLine("\tGenerate an example json settings file:");
+            Console.WriteLine("\t\tReversio.exe {-e|--example} output-path");
             Console.WriteLine("options:");
             Console.WriteLine("\t-v, --verbose: prints out more detailed processing informations");
+        }
+
+        private void GenerateExampleFile(string path = null)
+        {
+            var assembly = Assembly.GetExecutingAssembly();
+            var resourceName = assembly.GetName().Name + "." + "reversio.json";
+
+            if (String.IsNullOrWhiteSpace(path))
+                path = Path.Combine(Environment.CurrentDirectory, "reversio.json");
+            else if (Directory.Exists(path))
+                path = Path.Combine(path, "reversio.json");
+
+            using (var stream = assembly.GetManifestResourceStream(resourceName))
+            using (var reader = new StreamReader(stream))
+            {
+                File.WriteAllText(path, reader.ReadToEnd());
+            }
+            Console.WriteLine("Generated example file to {0}", path);
+            return;
         }
     }
 }
