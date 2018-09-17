@@ -54,7 +54,8 @@ namespace Reversio.Core
                     case LoadStep load:
                         if (!currentFlow.Open)
                             throw new Exception("Invalid step order. Cannot execute Load step: flow closed");
-                        Log.Information(String.Format("Executing Load step on schemas: ", String.Join(",",load.Schemas)));
+                        Log.Information(String.Format("Executing Load step - Entity Types: {0} - Schemas: {1}", 
+                            String.Join(",", load.EntityTypes), String.Join(",", load.Schemas)));
                         currentFlow.Entities.UnionWith(sqlEngine.Load(load));
                         break;
 
