@@ -54,10 +54,15 @@ namespace Reversio.Cli
         public bool PropertyNullableIfDefaultAndNotPk { get; set; }
 
         public string OutputPath { get; set; }
+        public string StubOutputPath { get; set; }
         public bool CleanFolder { get; set; }
 
         public string ClassName { get; set; }
+        public bool ClassAbstract { get; set; }
         public bool IncludeIndices { get; set; }
+        public string IncludeOnModelCreatingStub { get; set; }
+        public bool IncludeViews { get; set; }
+        public bool IncludeTablesWithoutPK { get; set; }
     }
 
     public class JsonDbFilterSetting

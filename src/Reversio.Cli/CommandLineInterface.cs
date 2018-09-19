@@ -195,10 +195,15 @@ namespace Reversio.Cli
                                 var dbContextStep = new DbContextStep()
                                 {
                                     OutputPath = step.OutputPath,
+                                    StubOutputPath = step.StubOutputPath,
                                     Namespace = step.Namespace,
                                     ClassName = step.ClassName,
+                                    ClassAbstract = step.ClassAbstract,
                                     Extends = step.Extends,
-                                    IncludeIndices = step.IncludeIndices
+                                    IncludeIndices = step.IncludeIndices,
+                                    IncludeOnModelCreatingStub = step.IncludeOnModelCreatingStub,
+                                    IncludeViews = step.IncludeViews,
+                                    IncludeTablesWithoutPK = step.IncludeTablesWithoutPK
                                 };
                                 if (!ValidateStep(dbContextStep))
                                     return false;

@@ -44,10 +44,15 @@
         {
           "StepType": "DbContext",
           "OutputPath": "./Model/MyDbContext.cs",
+          "StubOutputPath": "./Model/MyDbContext.cs",
           "Namespace": "MyProject.Model",
           "ClassName": "MyDbContext",
+          "ClassAbstract": false,
           "Extends": [ "DbContext" ],
-          "IncludeIndices": true
+          "IncludeOnModelCreatingStub": "Signature", // "", "Call", , "Signature"
+          "IncludeIndices": true,
+          "IncludeViews": true,
+          "IncludeTablesWithoutPK": true
         }
       ]
     }

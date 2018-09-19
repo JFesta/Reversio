@@ -281,5 +281,10 @@ namespace Reversio.Core.SqlEngine
                     return null;
             }
         }
+
+        public string GetFullName(Table table)
+        {
+            return String.Format("[{0}].[{1}]", table.Schema, table.Name);
+        }
     }
 }
