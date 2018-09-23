@@ -1,3 +1,4 @@
+![Reversio Logo](https://raw.githubusercontent.com/JFesta/Reversio/master/assets/reversio_128.ico) 
 # Reversio
 Entity Framework Core Reverse-Engineering Cli/Library Tool
 
