@@ -293,6 +293,13 @@ namespace Reversio.Core
                 if (!String.IsNullOrWhiteSpace(property.Column.Default))
                     directives.Add(String.Format(".HasDefaultValueSql(\"{0}\")", property.Column.Default));
 
+                if (property.Column.IsIdentity)
+                {
+                    var directive = _sqlEngine.GetIdentitySpecifier(property.Column);
+                    if (!String.IsNullOrWhiteSpace(directive))
+                        directives.Add(directive);
+                }
+
                 if (directives.Any())
                 {
                     builder.AppendLine();

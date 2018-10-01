@@ -29,6 +29,7 @@ namespace Reversio.Core.SqlEngine
         bool IsView(Table entity);
         bool IsString(Column column);
         bool IsUnicode(Column column);
+        string GetIdentitySpecifier(Column column);
         string ForeignKeyRuleString(string rule);
         string GetFullName(Table table);
     }

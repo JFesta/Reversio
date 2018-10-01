@@ -26,6 +26,7 @@ namespace Reversio.Core.Entities
         public string Name { get; set; }
         public int Position { get; set; }
         public string Default { get; set; }
+        public bool IsIdentity { get; set; }
         public bool IsNullable { get; set; }
         public string DataType { get; set; }
         public int? CharacterMaximumLength { get; set; }

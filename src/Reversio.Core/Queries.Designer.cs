@@ -66,12 +66,10 @@ namespace Reversio.Core {
         ///        C.[COLUMN_NAME] AS [Name],
         ///        C.[ORDINAL_POSITION] AS [Position],
         ///        C.[COLUMN_DEFAULT] AS [Default],
+        ///		(CASE WHEN COLUMNPROPERTY(OBJECT_ID([TABLE_SCHEMA] + &apos;.&apos; + [TABLE_NAME]), [COLUMN_NAME], &apos;IsIdentity&apos;) = 1 THEN 1 ELSE 0 END) AS [IsIdentity],
         ///        (CASE WHEN C.[IS_NULLABLE] = &apos;YES&apos; THEN 1 ELSE 0 END) AS [IsNullable],
         ///        LOWER(C.[DATA_TYPE]) AS [DataType],
-        ///        C.[CHARACTER_MAXIMUM_LENGTH] AS [CharacterMaximumLength],
-        ///        C.[NUMERIC_PRECISION] AS [NumericPrecision],
-        ///        C.[NUMERIC_SCALE] AS [NumericScale],
-        ///        C.[DATETIM [rest of string was truncated]&quot;;.
+        ///        C.[CHARACTER_MAXIMUM_LENGTH] AS [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string COLUMNS_SELECT {
             get {

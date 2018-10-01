@@ -265,6 +265,11 @@ namespace Reversio.Core.SqlEngine
             return false;
         }
 
+        public string GetIdentitySpecifier(Column column)
+        {
+            return ".UseSqlServerIdentityColumn()";
+        }
+
         public string ForeignKeyRuleString(string rule)
         {
             switch (rule)

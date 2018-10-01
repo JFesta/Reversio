@@ -123,6 +123,7 @@
         C.[COLUMN_NAME] AS [Name],
         C.[ORDINAL_POSITION] AS [Position],
         C.[COLUMN_DEFAULT] AS [Default],
+		(CASE WHEN COLUMNPROPERTY(OBJECT_ID([TABLE_SCHEMA] + '.' + [TABLE_NAME]), [COLUMN_NAME], 'IsIdentity') = 1 THEN 1 ELSE 0 END) AS [IsIdentity],
         (CASE WHEN C.[IS_NULLABLE] = 'YES' THEN 1 ELSE 0 END) AS [IsNullable],
         LOWER(C.[DATA_TYPE]) AS [DataType],
         C.[CHARACTER_MAXIMUM_LENGTH] AS [CharacterMaximumLength],
