@@ -202,6 +202,7 @@ namespace Reversio.Cli
                                     Extends = step.Extends,
                                     IncludeIndices = step.IncludeIndices,
                                     IncludeOnModelCreatingStub = step.IncludeOnModelCreatingStub,
+                                    IncludeOptionalStubs = step.IncludeOptionalStubs,
                                     IncludeViews = step.IncludeViews,
                                     IncludeTablesWithoutPK = step.IncludeTablesWithoutPK
                                 };

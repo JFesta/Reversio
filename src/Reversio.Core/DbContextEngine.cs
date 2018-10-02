@@ -62,7 +62,7 @@ namespace Reversio.Core
             }
             builder.AppendLine();
 
-            if (_settings.IncludeTablesWithoutPK && _settings.IncludeStubs)
+            if (_settings.IncludeTablesWithoutPK)
             {
                 foreach (var poco in FilterQueryTables(pocos))
                 {
@@ -74,8 +74,8 @@ namespace Reversio.Core
             {
                 foreach (var poco in FilterQueryTables(pocos))
                 {
-                    Log.Warning(String.Format("Table [{0}].[{1}] has no PK - DbContext will ignore it because either " +
-                        "setting 'IncludeTablesWithoutPK' is false or stub generation is disabled", poco.Table, poco.Table.Name));
+                    Log.Warning(String.Format("Table [{0}].[{1}] has no PK - DbContext will ignore it because setting 'IncludeTablesWithoutPK' is false", 
+                        poco.Table, poco.Table.Name));
                 }
             }
 
@@ -100,25 +100,27 @@ namespace Reversio.Core
 
             foreach (var poco in FilterEntities(pocos))
             {
-                WriteEntity(builder, ref indent, modelBuilderName, poco);
+                WriteEntity(builder, ref indent, modelBuilderName, stubs, poco);
             }
 
-            if (_settings.IncludeTablesWithoutPK && _settings.IncludeStubs)
+            if (_settings.IncludeTablesWithoutPK)
             {
                 foreach (var poco in FilterQueryTables(pocos))
                 {
-                    builder.AppendLine(String.Format("{0}{1}.Query<{2}>(entity =>", indent, modelBuilderName, poco.Name));
-                    builder.AppendLine(String.Format("{0}{{", indent));
-                    indent = indent.AddIndent();
+                    WriteEntity(builder, ref indent, modelBuilderName, stubs, poco);
 
-                    //stub: mandatory
-                    string stub = String.Concat(poco.Name, "Init");
-                    stubs.Add(new Tuple<Poco, string>(poco, stub));
-                    builder.AppendLine(String.Format("{0}{1}(entity);", indent, stub));
+                    //builder.AppendLine(String.Format("{0}{1}.Query<{2}>(entity =>", indent, modelBuilderName, poco.Name));
+                    //builder.AppendLine(String.Format("{0}{{", indent));
+                    //indent = indent.AddIndent();
 
-                    indent = indent.RemoveIndent();
-                    builder.AppendLine(String.Format("{0}}});", indent));
-                    builder.AppendLine();
+                    ////stub: mandatory
+                    //string stub = String.Concat(poco.Name, "Init");
+                    //stubs.Add(new Tuple<Poco, string>(poco, stub));
+                    //builder.AppendLine(String.Format("{0}{1}(entity);", indent, stub));
+
+                    //indent = indent.RemoveIndent();
+                    //builder.AppendLine(String.Format("{0}}});", indent));
+                    //builder.AppendLine();
                 }
             }
 
@@ -126,24 +128,26 @@ namespace Reversio.Core
             {
                 foreach (var poco in FilterQueryViews(pocos))
                 {
-                    builder.AppendLine(String.Format("{0}{1}.Query<{2}>(entity =>", indent, modelBuilderName, poco.Name));
-                    builder.AppendLine(String.Format("{0}{{", indent));
-                    indent = indent.AddIndent();
+                    WriteEntity(builder, ref indent, modelBuilderName, stubs, poco);
 
-                    //entity name
-                    builder.AppendLine(String.Format("{0}entity.ToView(\"{1}\", \"{2}\");", indent, poco.Table.Name, poco.Table.Schema));
+                    //builder.AppendLine(String.Format("{0}{1}.Query<{2}>(entity =>", indent, modelBuilderName, poco.Name));
+                    //builder.AppendLine(String.Format("{0}{{", indent));
+                    //indent = indent.AddIndent();
 
-                    //stub: optional
-                    if (_settings.IncludeStubs)
-                    {
-                        string stub = String.Concat(poco.Name, "Init");
-                        stubs.Add(new Tuple<Poco, string>(poco, stub));
-                        builder.AppendLine(String.Format("{0}{1}(entity);", indent, stub));
-                    }
+                    ////entity name
+                    //builder.AppendLine(String.Format("{0}entity.ToView(\"{1}\", \"{2}\");", indent, poco.Table.Name, poco.Table.Schema));
 
-                    indent = indent.RemoveIndent();
-                    builder.AppendLine(String.Format("{0}}});", indent));
-                    builder.AppendLine();
+                    ////stub: optional
+                    //if (_settings.IncludeOptionalStubs)
+                    //{
+                    //    string stub = String.Concat(poco.Name, "Init");
+                    //    stubs.Add(new Tuple<Poco, string>(poco, stub));
+                    //    builder.AppendLine(String.Format("{0}{1}(entity);", indent, stub));
+                    //}
+
+                    //indent = indent.RemoveIndent();
+                    //builder.AppendLine(String.Format("{0}}});", indent));
+                    //builder.AppendLine();
                 }
             }
 
@@ -156,7 +160,7 @@ namespace Reversio.Core
             indent = indent.RemoveIndent();
             builder.AppendLine(String.Format("{0}}}", indent));
             
-            if ((_settings.IncludeStubs || _settings.IncludeOnModelCreatingStubSignature) && _settings.SelfStub)
+            if ((_settings.IncludeOptionalStubs || _settings.IncludeOnModelCreatingStubSignature) && _settings.SelfStub)
                 WriteStubs(builder, ref indent, modelBuilderName, stubs);
 
             indent = indent.RemoveIndent();
@@ -166,7 +170,7 @@ namespace Reversio.Core
 
             WriteFile(builder, _settings.OutputPath, _settings.ClassName);
             
-            if ((_settings.IncludeStubs || _settings.IncludeOnModelCreatingStubSignature) && !_settings.SelfStub)
+            if ((_settings.IncludeOptionalStubs || _settings.IncludeOnModelCreatingStubSignature) && !_settings.SelfStub)
             {
                 var stubBuilder = new StringBuilder();
                 indent = String.Empty;
@@ -222,14 +226,28 @@ namespace Reversio.Core
                 builder.AppendLine(String.Format("{0}public {1} class {2}", indent, qualifier, _settings.ClassName));
         }
 
-        private void WriteEntity(StringBuilder builder, ref string indent, string modelBuilderName, Poco poco)
+        private void WriteEntity(StringBuilder builder, ref string indent, string modelBuilderName, List<Tuple<Poco, string>> stubs, Poco poco)
         {
-            builder.AppendLine(String.Format("{0}{1}.Entity<{2}>(entity =>", indent, modelBuilderName, poco.Name));
+            if (!_sqlEngine.IsView(poco.Table) && poco.Table.Pk != null)
+                builder.AppendLine(String.Format("{0}{1}.Entity<{2}>(entity =>", indent, modelBuilderName, poco.Name));
+            else
+                builder.AppendLine(String.Format("{0}{1}.Query<{2}>(entity =>", indent, modelBuilderName, poco.Name));
+
             builder.AppendLine(String.Format("{0}{{", indent));
             indent = indent.AddIndent();
 
             //entity name
-            builder.AppendLine(String.Format("{0}entity.ToTable(\"{1}\", \"{2}\");", indent, poco.Table.Name, poco.Table.Schema));
+            if (_sqlEngine.IsView(poco.Table))
+                builder.AppendLine(String.Format("{0}entity.ToView(\"{1}\", \"{2}\");", indent, poco.Table.Name, poco.Table.Schema));
+            else if (poco.Table.Pk != null)
+                builder.AppendLine(String.Format("{0}entity.ToTable(\"{1}\", \"{2}\");", indent, poco.Table.Name, poco.Table.Schema));
+            else
+            {
+                //mandatory pre-stub
+                string stub = String.Concat(poco.Name, "Query");
+                stubs.Add(new Tuple<Poco, string>(poco, stub));
+                builder.AppendLine(String.Format("{0}{1}(entity);", indent, stub));
+            }
 
             //pk
             if (poco.Table.Pk != null && poco.Table.Pk.Columns.Any())
@@ -243,7 +261,7 @@ namespace Reversio.Core
             }
 
             //indices
-            if (_settings.IncludeIndices && poco.Table.Indices != null && poco.Table.Indices.Any(idx => !idx.IsPrimaryKey))
+            if (_settings.IncludeIndices && poco.Table.Pk != null && poco.Table.Indices != null && poco.Table.Indices.Any(idx => !idx.IsPrimaryKey))
             {
                 foreach (var index in poco.Table.Indices.Where(idx => !idx.IsPrimaryKey))
                 {
@@ -360,6 +378,14 @@ namespace Reversio.Core
                 indent = indent.RemoveIndent();
             }
 
+            //optional stub
+            if (_settings.IncludeOptionalStubs)
+            {
+                string stub = String.Concat(poco.Name, "Init");
+                stubs.Add(new Tuple<Poco, string>(poco, stub));
+                builder.AppendLine(String.Format("{0}{1}(entity);", indent, stub));
+            }
+
             indent = indent.RemoveIndent();
             builder.AppendLine(String.Format("{0}}});", indent));
             builder.AppendLine();
@@ -385,24 +411,21 @@ namespace Reversio.Core
             }
 
             //entity stubs
-            if (_settings.IncludeStubs)
+            foreach (var stub in stubs)
             {
-                foreach (var stub in stubs)
+                builder.AppendLine(indent);
+                if (_settings.ClassAbstract)
                 {
-                    builder.AppendLine(indent);
-                    if (_settings.ClassAbstract)
-                    {
-                        builder.AppendLine(String.Format("{0}protected abstract void {1}(QueryTypeBuilder<{2}> entity);",
-                            indent, stub.Item2, stub.Item1.Name));
-                    }
-                    else
-                    {
-                        builder.AppendLine(String.Format("{0}protected virtual void {1}(QueryTypeBuilder<{2}> entity)",
-                            indent, stub.Item2, stub.Item1.Name));
-                        builder.AppendLine(String.Format("{0}{{", indent));
-                        builder.AppendLine(String.Format("{0}", indent));
-                        builder.AppendLine(String.Format("{0}}}", indent));
-                    }
+                    builder.AppendLine(String.Format("{0}protected abstract void {1}(QueryTypeBuilder<{2}> entity);",
+                        indent, stub.Item2, stub.Item1.Name));
+                }
+                else
+                {
+                    builder.AppendLine(String.Format("{0}protected virtual void {1}(QueryTypeBuilder<{2}> entity)",
+                        indent, stub.Item2, stub.Item1.Name));
+                    builder.AppendLine(String.Format("{0}{{", indent));
+                    builder.AppendLine(String.Format("{0}", indent));
+                    builder.AppendLine(String.Format("{0}}}", indent));
                 }
             }
         }

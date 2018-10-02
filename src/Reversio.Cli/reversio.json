@@ -50,6 +50,7 @@
           "ClassAbstract": false,
           "Extends": [ "DbContext" ],
           "IncludeOnModelCreatingStub": "Signature", // "", "Call", , "Signature"
+          "IncludeOptionalStubs": false,
           "IncludeIndices": true,
           "IncludeViews": true,
           "IncludeTablesWithoutPK": true
