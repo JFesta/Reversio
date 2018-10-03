@@ -21,6 +21,6 @@ namespace Reversio.Core.Settings
 {
     public interface IStep
     {
-
+        string Name { get; set; }
     }
 }

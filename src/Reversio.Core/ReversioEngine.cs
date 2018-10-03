@@ -54,15 +54,15 @@ namespace Reversio.Core
                     case LoadStep load:
                         if (!currentFlow.Open)
                             throw new Exception("Invalid step order. Cannot execute Load step: flow closed");
-                        Log.Information(String.Format("Executing Load step - Entity Types: {0} - Schemas: {1}", 
-                            String.Join(",", load.EntityTypes), String.Join(",", load.Schemas)));
+                        Log.Information(String.Format("Executing Load step \"{0}\" - Entity Types: {1} - Schemas: {2}", 
+                            load.Name, String.Join(",", load.EntityTypes), String.Join(",", load.Schemas)));
                         currentFlow.Entities.UnionWith(sqlEngine.Load(load));
                         break;
 
                     case PocoGenerateStep pocoGenerate:
                         if (!currentFlow.Open)
                             throw new Exception("Invalid step order. Cannot execute PocoGenerate step: flow closed");
-                        Log.Information(String.Format("Executing PocoGenerate step"));
+                        Log.Information(String.Format("Executing PocoGenerate step \"{0}\"", pocoGenerate.Name));
                         var newPocos = pocoEngine.GeneratePocos(currentFlow.Entities, pocoGenerate);
                         if (currentFlow.Pocos.Any())
                         {
@@ -78,14 +78,16 @@ namespace Reversio.Core
                     case PocoWriteStep pocoWrite:
                         if (currentFlow.Open)
                             throw new Exception("Invalid step order. Cannot execute write step: flow open");
-                        Log.Information(String.Format("Executing PocoWrite step to output path {0}", pocoWrite.OutputPath));
+                        Log.Information(String.Format("Executing PocoWrite step \"{0}\" to output path {1}", 
+                            pocoWrite.Name, pocoWrite.OutputPath));
                         pocoEngine.WritePocos(currentFlow.Pocos, pocoWrite);
                         _flows.Add(currentFlow);
                         currentFlow = new Flow();
                         break;
 
                     case DbContextStep dbContext:
-                        Log.Information(String.Format("Executing DbContext step to output path {0}", dbContext.OutputPath));
+                        Log.Information(String.Format("Executing DbContext step \"{0}\" to output path {1}", 
+                            dbContext.Name, dbContext.OutputPath));
                         var dbContextEngine = new DbContextEngine(dbContext, sqlEngine);
                         dbContextEngine.WriteDbContext(_flows.SelectMany(f => f.Pocos));
                         last = true;

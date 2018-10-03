@@ -134,6 +134,7 @@ namespace Reversio.Cli
                                 }
                                 var loadStep = new LoadStep()
                                 {
+                                    Name = step.Name,
                                     EntityTypes = step.EntityTypes.Select(s => s?.ToLowerInvariant()),
                                     Schemas = step.Schemas?.Select(s => s?.ToLowerInvariant()),
                                     Exclude = step.Exclude.Convert()
@@ -151,6 +152,7 @@ namespace Reversio.Cli
                                 }
                                 var pocoGenerateStep = new PocoGenerateStep()
                                 {
+                                    Name = step.Name,
                                     Namespace = step.Namespace,
                                     ClassAccessModifier = step.ClassAccessModifier,
                                     ClassPartial = step.ClassPartial,
@@ -176,6 +178,7 @@ namespace Reversio.Cli
                                 }
                                 var pocoWriteStep = new PocoWriteStep()
                                 {
+                                    Name = step.Name,
                                     OutputPath = step.OutputPath,
                                     CleanFolder = step.CleanFolder,
                                     PocosExclude = step.Exclude.Convert()
@@ -194,6 +197,7 @@ namespace Reversio.Cli
                                 }
                                 var dbContextStep = new DbContextStep()
                                 {
+                                    Name = step.Name,
                                     OutputPath = step.OutputPath,
                                     StubOutputPath = step.StubOutputPath,
                                     Namespace = step.Namespace,
@@ -202,6 +206,7 @@ namespace Reversio.Cli
                                     Extends = step.Extends,
                                     IncludeIndices = step.IncludeIndices,
                                     IncludeOnModelCreatingStub = step.IncludeOnModelCreatingStub,
+                                    IncludeOptionalStubs = step.IncludeOptionalStubs,
                                     IncludeViews = step.IncludeViews,
                                     IncludeTablesWithoutPK = step.IncludeTablesWithoutPK
                                 };

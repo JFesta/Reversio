@@ -21,6 +21,7 @@ namespace Reversio.Core.Settings
 {
     public class DbContextStep : IStep
     {
+        public string Name { get; set; }
         public string OutputPath { get; set; }
         public string StubOutputPath { get; set; }
         public string Namespace { get; set; }
@@ -29,16 +30,17 @@ namespace Reversio.Core.Settings
         public IEnumerable<string> Extends { get; set; }
         public bool IncludeIndices { get; set; }
         public string IncludeOnModelCreatingStub { get; set; }
+        public bool IncludeOptionalStubs { get; set; }
         public bool IncludeViews { get; set; }
         public bool IncludeTablesWithoutPK { get; set; }
 
-        public bool IncludeStubs
-        {
-            get
-            {
-                return !String.IsNullOrWhiteSpace(StubOutputPath);
-            }
-        }
+        //public bool IncludeStubs
+        //{
+        //    get
+        //    {
+        //        return !String.IsNullOrWhiteSpace(StubOutputPath);
+        //    }
+        //}
 
         public bool SelfStub
         {
