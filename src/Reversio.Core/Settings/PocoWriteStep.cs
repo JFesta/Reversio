@@ -21,6 +21,7 @@ namespace Reversio.Core.Settings
 {
     public class PocoWriteStep : IStep
     {
+        public string Name { get; set; }
         public string OutputPath { get; set; }
         public bool CleanFolder { get; set; }
         public DbFilterSetting PocosExclude { get; set; }

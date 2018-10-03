@@ -36,6 +36,7 @@ namespace Reversio.Cli
 
     public class JsonStep
     {
+        public string Name { get; set; }
         public string StepType { get; set; }
         public List<string> EntityTypes { get; set; }
         public List<string> Schemas { get; set; }

@@ -5,6 +5,7 @@
       "ConnectionString": "",
       "Steps": [
         {
+          "Name": "Load",
           "StepType": "Load",
           "EntityTypes": [ "Table", "View" ],
           "Schemas": [],
@@ -14,6 +15,7 @@
           }
         },
         {
+          "Name": "Generate",
           "StepType": "PocoGenerate",
           "Namespace": "MyProject.Model",
           "ClassAccessModifier": "public",
@@ -33,6 +35,7 @@
           "PropertyNullableIfDefaultAndNotPk": false
         },
         {
+          "Name": "Write",
           "StepType": "PocoWrite",
           "OutputPath": "./",
           "CleanFolder": true,
@@ -42,6 +45,7 @@
           }
         },
         {
+          "Name": "DbContext",
           "StepType": "DbContext",
           "OutputPath": "./Model/MyDbContext.cs",
           "StubOutputPath": "./Model/MyDbContext.cs",
