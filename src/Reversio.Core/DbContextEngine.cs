@@ -341,41 +341,42 @@ namespace Reversio.Core
             //fk
             foreach (var property in poco.OutNavigationProperties)
             {
-                builder.AppendLine();
-                builder.AppendLine(String.Format("{0}entity.HasOne(f => f.{1})", indent, property.Name));
-                indent = indent.AddIndent();
-
                 var externalNavigationProperty = property.Poco.InNavigationProperties.FirstOrDefault(n => n.ForeignKey == property.ForeignKey);
                 if (externalNavigationProperty != null)
                 {
+
+                    builder.AppendLine();
+                    builder.AppendLine(String.Format("{0}entity.HasOne(f => f.{1})", indent, property.Name));
+                    indent = indent.AddIndent();
+
                     if (property.ForeignKey.IsOne())
                         builder.AppendLine(String.Format("{0}.WithOne(p => p.{1})", indent, externalNavigationProperty.Name));
                     else
                         builder.AppendLine(String.Format("{0}.WithMany(p => p.{1})", indent, externalNavigationProperty.Name));
-                }
 
-                if (property.BaseProperties != null && property.BaseProperties.Any())
-                {
-                    if (property.ForeignKey.IsOne())
+                    if (property.BaseProperties != null && property.BaseProperties.Any())
                     {
-                        builder.AppendLine(String.Format("{0}.HasForeignKey<{1}>({2})", indent,
-                           poco.Name,
-                           String.Join(", ", property.BaseProperties.Select(p => String.Concat("\"", p.Name, "\"")))));
+                        if (property.ForeignKey.IsOne())
+                        {
+                            builder.AppendLine(String.Format("{0}.HasForeignKey<{1}>({2})", indent,
+                               poco.Name,
+                               String.Join(", ", property.BaseProperties.Select(p => String.Concat("\"", p.Name, "\"")))));
+                        }
+                        else
+                        {
+                            builder.AppendLine(String.Format("{0}.HasForeignKey({1})", indent,
+                               String.Join(", ", property.BaseProperties.Select(p => String.Concat("\"", p.Name, "\"")))));
+                        }
                     }
-                    else
-                    {
-                        builder.AppendLine(String.Format("{0}.HasForeignKey({1})", indent,
-                           String.Join(", ", property.BaseProperties.Select(p => String.Concat("\"", p.Name, "\"")))));
-                    }
+
+                    var onDelete = _sqlEngine.ForeignKeyRuleString(property.ForeignKey.DeleteRuleStr);
+                    if (onDelete != null)
+                        builder.AppendLine(String.Format("{0}.OnDelete({1})", indent, onDelete));
+
+                    builder.AppendLine(String.Format("{0}.HasConstraintName(\"{1}\");", indent, property.ForeignKey.Name));
+
+                    indent = indent.RemoveIndent();
                 }
-
-                var onDelete = _sqlEngine.ForeignKeyRuleString(property.ForeignKey.DeleteRuleStr);
-                if (onDelete != null)
-                    builder.AppendLine(String.Format("{0}.OnDelete({1})", indent, onDelete));
-
-                builder.AppendLine(String.Format("{0}.HasConstraintName(\"{1}\");", indent, property.ForeignKey.Name));
-
-                indent = indent.RemoveIndent();
             }
 
             //optional stub
