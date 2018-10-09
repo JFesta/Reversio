@@ -19,8 +19,10 @@ using System.Text;
 
 namespace Reversio.Core.Settings
 {
-    public interface IStep
+    public abstract class Step
     {
-        string Name { get; set; }
+        public string Name { get; set; }
+        
+        public Step Next { get; set; }
     }
 }

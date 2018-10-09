@@ -19,9 +19,8 @@ using System.Text;
 
 namespace Reversio.Core.Settings
 {
-    public class DbContextStep : IStep
+    public class DbContextStep : Step
     {
-        public string Name { get; set; }
         public string OutputPath { get; set; }
         public string StubOutputPath { get; set; }
         public string Namespace { get; set; }

@@ -19,9 +19,8 @@ using System.Text;
 
 namespace Reversio.Core.Settings
 {
-    public class PocoGenerateStep : IStep
+    public class PocoGenerateStep : Step
     {
-        public string Name { get; set; }
         public string Namespace { get; set; }
         public string ClassAccessModifier { get; set; }
         public bool ClassPartial { get; set; }

@@ -25,6 +25,6 @@ namespace Reversio.Core.Settings
         public string WorkingDirectory { get; set; }
         public string Provider { get; set; }
         public string ConnectionString { get; set; }
-        public List<IStep> Steps { get; set; } = new List<IStep>();
+        public List<Step> Steps { get; set; } = new List<Step>();
     }
 }

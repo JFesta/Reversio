@@ -98,6 +98,71 @@ namespace Reversio.Core
             }
         }
 
+        private void BuildGraph()
+        {
+            var stack = new LinkedList<Step>();
+            var dbContexts = new LinkedList<DbContextStep>();
+
+            Step prev = null;
+
+            foreach (var step in _job.Steps)
+            {
+                //if (current == null)
+                //{
+                //    current = step;
+                //}
+                if (dbContexts.Any() && !(step is DbContextStep))
+                    continue;
+                switch (step)
+                {
+                    case LoadStep loadStep:
+                        if (prev != null && !(prev is LoadStep))
+                            stack.Clear();
+                        stack.AddLast(step);
+                        break;
+                    case PocoGenerateStep generateStep:
+                        if (prev != null && prev is LoadStep)
+                            LinkStack(stack, step);
+                        break;
+                    case PocoWriteStep writeStep:
+                        if (prev != null && prev is PocoGenerateStep)
+                            LinkStack(stack, step);
+                        break;
+                    case DbContextStep dbContextStep:
+                        stack.Clear();
+                        dbContexts.AddLast(dbContextStep);
+                        break;
+                }
+                prev = step;
+            }
+            var first = dbContexts.FirstOrDefault();
+            if (first != null)
+            {
+                foreach (var pocoWrite in _job.Steps.Select(j => j as PocoWriteStep).Where(j => j != null))
+                {
+                    pocoWrite.Next = first;
+                }
+            }
+            DbContextStep dbPrev = null;
+            foreach (var next in dbContexts)
+            {
+                if (dbPrev == null)
+                    dbPrev = next;
+                else
+                    dbPrev.Next = next;
+            }
+        }
+
+        private void LinkStack(LinkedList<Step> stack, Step item)
+        {
+            foreach (var load in stack)
+            {
+                load.Next = item;
+            }
+            stack.Clear();
+            stack.AddLast(item);
+        }
+
         private ISqlEngine GetEngine()
         {
             if (_job.Provider.Equals(SqlServerEngine.Provider, StringComparison.InvariantCultureIgnoreCase))
