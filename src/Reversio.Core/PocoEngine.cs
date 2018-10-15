@@ -230,6 +230,9 @@ namespace Reversio.Core
                 indent = indent.RemoveIndent();
                 builder.AppendLine(String.Format("{0}}}", indent));
                 builder.AppendLine("}");
+
+                if (!Directory.Exists(settings.OutputPath))
+                    Directory.CreateDirectory(settings.OutputPath);
                 File.WriteAllText(Path.Combine(settings.OutputPath, poco.Name + ".cs"), builder.ToString());
             }
         }

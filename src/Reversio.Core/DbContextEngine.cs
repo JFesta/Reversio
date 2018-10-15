@@ -168,6 +168,9 @@ namespace Reversio.Core
             indent = indent.RemoveIndent();
             builder.AppendLine(String.Format("{0}}}", indent));
 
+            var directory = new FileInfo(_settings.OutputPath).Directory.FullName;
+            if (!Directory.Exists(directory))
+                Directory.CreateDirectory(directory);
             WriteFile(builder, _settings.OutputPath, _settings.ClassName);
             
             if ((_settings.IncludeOptionalStubs || _settings.IncludeOnModelCreatingStubSignature) && !_settings.SelfStub)
@@ -186,6 +189,9 @@ namespace Reversio.Core
                 indent = indent.RemoveIndent();
                 stubBuilder.AppendLine(String.Format("{0}}}", indent));
 
+                directory = new FileInfo(_settings.StubOutputPath).Directory.FullName;
+                if (!Directory.Exists(directory))
+                    Directory.CreateDirectory(directory);
                 WriteFile(stubBuilder, _settings.StubOutputPath, _settings.ClassName);
             }
         }
