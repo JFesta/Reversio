@@ -43,10 +43,10 @@ namespace Reversio.Core
 
         public void Execute()
         {
-            var sqlEngine = new SqlServerEngine(_job.ConnectionString);
+            var sqlEngine = GetEngine();
             var pocoEngine = new PocoEngine(sqlEngine);
             var currentFlow = new Flow();
-            bool last = false;
+            //bool last = false;
             foreach (var step in _job.Steps)
             {
                 switch (step)
@@ -90,11 +90,11 @@ namespace Reversio.Core
                             dbContext.Name, dbContext.OutputPath));
                         var dbContextEngine = new DbContextEngine(dbContext, sqlEngine);
                         dbContextEngine.WriteDbContext(_flows.SelectMany(f => f.Pocos));
-                        last = true;
+                        //last = true;
                         break;
                 }
-                if (last)
-                    break;
+                //if (last)
+                //    break;
             }
         }
 

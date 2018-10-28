@@ -60,9 +60,11 @@ namespace Reversio.Cli
 
         public string ClassName { get; set; }
         public bool ClassAbstract { get; set; }
-        public bool IncludeIndices { get; set; }
+        public bool IncludeProperties { get; set; } = true;
+        public bool IncludeOnModelCreating { get; set; } = true;
         public string IncludeOnModelCreatingStub { get; set; }
         public bool IncludeOptionalStubs { get; set; }
+        public bool IncludeIndices { get; set; }
         public bool IncludeViews { get; set; }
         public bool IncludeTablesWithoutPK { get; set; }
     }

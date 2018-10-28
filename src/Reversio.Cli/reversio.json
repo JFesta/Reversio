@@ -53,6 +53,8 @@
           "ClassName": "MyDbContext",
           "ClassAbstract": false,
           "Extends": [ "DbContext" ],
+          "IncludeProperties": true,
+          "IncludeOnModelCreating": true,
           "IncludeOnModelCreatingStub": "Signature", // "", "Call", , "Signature"
           "IncludeOptionalStubs": false,
           "IncludeIndices": true,

@@ -204,16 +204,18 @@ namespace Reversio.Cli
                                     ClassName = step.ClassName,
                                     ClassAbstract = step.ClassAbstract,
                                     Extends = step.Extends,
-                                    IncludeIndices = step.IncludeIndices,
+                                    IncludeProperties = step.IncludeProperties,
+                                    IncludeOnModelCreating = step.IncludeOnModelCreating,
                                     IncludeOnModelCreatingStub = step.IncludeOnModelCreatingStub,
                                     IncludeOptionalStubs = step.IncludeOptionalStubs,
+                                    IncludeIndices = step.IncludeIndices,
                                     IncludeViews = step.IncludeViews,
                                     IncludeTablesWithoutPK = step.IncludeTablesWithoutPK
                                 };
                                 if (!ValidateStep(dbContextStep))
                                     return false;
                                 job.Steps.Add(dbContextStep);
-                                state = -1;
+                                //state = -1;
                                 break;
                         }
                     }

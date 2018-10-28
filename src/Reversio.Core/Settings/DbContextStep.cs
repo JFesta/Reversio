@@ -28,20 +28,14 @@ namespace Reversio.Core.Settings
         public string ClassName { get; set; }
         public bool ClassAbstract { get; set; }
         public IEnumerable<string> Extends { get; set; }
-        public bool IncludeIndices { get; set; }
+        public bool IncludeProperties { get; set; }
+        public bool IncludeOnModelCreating { get; set; }
         public string IncludeOnModelCreatingStub { get; set; }
         public bool IncludeOptionalStubs { get; set; }
+        public bool IncludeIndices { get; set; }
         public bool IncludeViews { get; set; }
         public bool IncludeTablesWithoutPK { get; set; }
-
-        //public bool IncludeStubs
-        //{
-        //    get
-        //    {
-        //        return !String.IsNullOrWhiteSpace(StubOutputPath);
-        //    }
-        //}
-
+        
         public bool SelfStub
         {
             get

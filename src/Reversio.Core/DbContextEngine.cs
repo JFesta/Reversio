@@ -56,109 +56,85 @@ namespace Reversio.Core
             builder.AppendLine(String.Format("{0}}}", indent));
             builder.AppendLine();
 
-            foreach (var poco in FilterEntities(pocos))
-            {
-                builder.AppendLine(String.Format("{0}public virtual DbSet<{1}> {2} {{ get; set; }}", indent, poco.Name, poco.Name));
-            }
-            builder.AppendLine();
-
-            if (_settings.IncludeTablesWithoutPK)
+            //warnings
+            if (!_settings.IncludeTablesWithoutPK)
             {
                 foreach (var poco in FilterQueryTables(pocos))
                 {
-                    builder.AppendLine(String.Format("{0}public virtual DbQuery<{1}> {2} {{ get; set; }}", indent, poco.Name, poco.Name));
-                }
-                builder.AppendLine();
-            }
-            else
-            {
-                foreach (var poco in FilterQueryTables(pocos))
-                {
-                    Log.Warning(String.Format("Table [{0}].[{1}] has no PK - DbContext will ignore it because setting 'IncludeTablesWithoutPK' is false", 
+                    Log.Warning(String.Format("Table [{0}].[{1}] has no PK - DbContext will ignore it because setting 'IncludeTablesWithoutPK' is false",
                         poco.Table, poco.Table.Name));
                 }
             }
 
-            if (_settings.IncludeViews)
+            if (_settings.IncludeProperties)
             {
-                foreach (var poco in FilterQueryViews(pocos))
+                foreach (var poco in FilterEntities(pocos))
                 {
-                    builder.AppendLine(String.Format("{0}public virtual DbQuery<{1}> {2} {{ get; set; }}", indent, poco.Name, poco.Name));
+                    builder.AppendLine(String.Format("{0}public virtual DbSet<{1}> {2} {{ get; set; }}", indent, poco.Name, poco.Name));
                 }
                 builder.AppendLine();
+
+                if (_settings.IncludeTablesWithoutPK)
+                {
+                    foreach (var poco in FilterQueryTables(pocos))
+                    {
+                        builder.AppendLine(String.Format("{0}public virtual DbQuery<{1}> {2} {{ get; set; }}", indent, poco.Name, poco.Name));
+                    }
+                    builder.AppendLine();
+                }
+
+                if (_settings.IncludeViews)
+                {
+                    foreach (var poco in FilterQueryViews(pocos))
+                    {
+                        builder.AppendLine(String.Format("{0}public virtual DbQuery<{1}> {2} {{ get; set; }}", indent, poco.Name, poco.Name));
+                    }
+                    builder.AppendLine();
+                }
             }
 
             var modelBuilderName = "modelBuilder";
-            builder.AppendLine(String.Format("{0}protected override void OnModelCreating(ModelBuilder {1})", indent, modelBuilderName));
-            builder.AppendLine(String.Format("{0}{{", indent));
-            indent = indent.AddIndent();
-
-            //foreach (var noPk in pocos.Where(p => !_sqlEngine.IsView(p.Table) && p.Table.Pk == null))
-            //{
-            //    Log.Warning(String.Format("Table [{0}].[{1}] has no PK - DbContext will ignore it", noPk.Table.Schema, noPk.Table.Name));
-            //}
-
-            foreach (var poco in FilterEntities(pocos))
+            if (_settings.IncludeOnModelCreating)
             {
-                WriteEntity(builder, ref indent, modelBuilderName, stubs, poco);
-            }
+                builder.AppendLine(String.Format("{0}protected override void OnModelCreating(ModelBuilder {1})", indent, modelBuilderName));
+                builder.AppendLine(String.Format("{0}{{", indent));
+                indent = indent.AddIndent();
 
-            if (_settings.IncludeTablesWithoutPK)
-            {
-                foreach (var poco in FilterQueryTables(pocos))
+                //foreach (var noPk in pocos.Where(p => !_sqlEngine.IsView(p.Table) && p.Table.Pk == null))
+                //{
+                //    Log.Warning(String.Format("Table [{0}].[{1}] has no PK - DbContext will ignore it", noPk.Table.Schema, noPk.Table.Name));
+                //}
+
+                foreach (var poco in FilterEntities(pocos))
                 {
                     WriteEntity(builder, ref indent, modelBuilderName, stubs, poco);
-
-                    //builder.AppendLine(String.Format("{0}{1}.Query<{2}>(entity =>", indent, modelBuilderName, poco.Name));
-                    //builder.AppendLine(String.Format("{0}{{", indent));
-                    //indent = indent.AddIndent();
-
-                    ////stub: mandatory
-                    //string stub = String.Concat(poco.Name, "Init");
-                    //stubs.Add(new Tuple<Poco, string>(poco, stub));
-                    //builder.AppendLine(String.Format("{0}{1}(entity);", indent, stub));
-
-                    //indent = indent.RemoveIndent();
-                    //builder.AppendLine(String.Format("{0}}});", indent));
-                    //builder.AppendLine();
                 }
-            }
 
-            if (_settings.IncludeViews)
-            {
-                foreach (var poco in FilterQueryViews(pocos))
+                if (_settings.IncludeTablesWithoutPK)
                 {
-                    WriteEntity(builder, ref indent, modelBuilderName, stubs, poco);
-
-                    //builder.AppendLine(String.Format("{0}{1}.Query<{2}>(entity =>", indent, modelBuilderName, poco.Name));
-                    //builder.AppendLine(String.Format("{0}{{", indent));
-                    //indent = indent.AddIndent();
-
-                    ////entity name
-                    //builder.AppendLine(String.Format("{0}entity.ToView(\"{1}\", \"{2}\");", indent, poco.Table.Name, poco.Table.Schema));
-
-                    ////stub: optional
-                    //if (_settings.IncludeOptionalStubs)
-                    //{
-                    //    string stub = String.Concat(poco.Name, "Init");
-                    //    stubs.Add(new Tuple<Poco, string>(poco, stub));
-                    //    builder.AppendLine(String.Format("{0}{1}(entity);", indent, stub));
-                    //}
-
-                    //indent = indent.RemoveIndent();
-                    //builder.AppendLine(String.Format("{0}}});", indent));
-                    //builder.AppendLine();
+                    foreach (var poco in FilterQueryTables(pocos))
+                    {
+                        WriteEntity(builder, ref indent, modelBuilderName, stubs, poco);
+                    }
                 }
-            }
 
-            if (_settings.IncludeOnModelCreatingStubCall)
-            {
-                builder.AppendLine(indent);
-                builder.AppendLine(String.Format("{0}OnModelCreatingNext({1});", indent, modelBuilderName)); 
-            }
+                if (_settings.IncludeViews)
+                {
+                    foreach (var poco in FilterQueryViews(pocos))
+                    {
+                        WriteEntity(builder, ref indent, modelBuilderName, stubs, poco);
+                    }
+                }
 
-            indent = indent.RemoveIndent();
-            builder.AppendLine(String.Format("{0}}}", indent));
+                if (_settings.IncludeOnModelCreatingStubCall)
+                {
+                    builder.AppendLine(indent);
+                    builder.AppendLine(String.Format("{0}OnModelCreatingNext({1});", indent, modelBuilderName));
+                }
+
+                indent = indent.RemoveIndent();
+                builder.AppendLine(String.Format("{0}}}", indent));
+            }
             
             if ((_settings.IncludeOptionalStubs || _settings.IncludeOnModelCreatingStubSignature) && _settings.SelfStub)
                 WriteStubs(builder, ref indent, modelBuilderName, stubs);
