@@ -129,7 +129,8 @@
         C.[CHARACTER_MAXIMUM_LENGTH] AS [CharacterMaximumLength],
         C.[NUMERIC_PRECISION] AS [NumericPrecision],
         C.[NUMERIC_SCALE] AS [NumericScale],
-        C.[DATETIME_PRECISION] AS [DateTimePrecision]
+        C.[DATETIME_PRECISION] AS [DateTimePrecision],
+        (CASE WHEN COLUMNPROPERTY(OBJECT_ID([TABLE_SCHEMA] + '.' + [TABLE_NAME]), [COLUMN_NAME], 'GeneratedAlwaysType') = 1 THEN 1 ELSE 0 END) AS [GeneratedAlwaysType]
 FROM    INFORMATION_SCHEMA.COLUMNS C
 WHERE   C.[TABLE_NAME] NOT IN ('EdmMetadata', '__MigrationHistory', '__RefactorLog')
         AND C.[TABLE_NAME] NOT LIKE 'sysdiagram%'</value>
