@@ -33,7 +33,7 @@ namespace Reversio.Core.Entities
         public int? NumericPrecision { get; set; }
         public int? NumericScale { get; set; }
         public int? DateTimePrecision { get; set; }
-
+        public bool GeneratedAlwaysType { get; set; }
         public Table Table { get; set; }
         public List<ForeignKeyColumn> Dependencies { get; set; }
         public List<ForeignKeyColumn> DependenciesFrom { get; set; }
