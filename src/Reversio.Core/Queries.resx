@@ -226,6 +226,51 @@ WHERE T.[is_ms_shipped] = 0
     AND IND.[ignore_dup_key] = 0
     AND T.[name] NOT LIKE 'sysdiagram%'</value>
   </data>
+  <data name="MYSQL_COLUMNS_SELECT" xml:space="preserve">
+    <value>SELECT  C.TABLE_SCHEMA AS 'Schema',
+        C.TABLE_NAME AS 'TableName',
+        C.COLUMN_NAME AS 'Name',
+        C.ORDINAL_POSITION AS 'Position',
+        C.COLUMN_DEFAULT AS 'Default',
+        0 as 'IsIdentity',
+		(CASE WHEN C.IS_NULLABLE = 'YES' THEN 1 ELSE 0 END) AS 'IsNullable',
+        LOWER(C.DATA_TYPE) AS 'DataType',
+        C.CHARACTER_MAXIMUM_LENGTH AS 'CharacterMaximumLength',
+        C.NUMERIC_PRECISION AS 'NumericPrecision',
+        C.NUMERIC_SCALE AS 'NumericScale',
+        C.DATETIME_PRECISION AS 'DateTimePrecision',
+        0 AS 'GeneratedAlwaysType'
+FROM    INFORMATION_SCHEMA.COLUMNS C
+WHERE   C.TABLE_SCHEMA NOT IN ('sys', 'performance_schema', 'mysql', 'information_schema')</value>
+  </data>
+  <data name="MYSQL_FOREIGN_KEYS_SELECT" xml:space="preserve">
+    <value>SELECT DISTINCT
+    C.CONSTRAINT_SCHEMA AS 'Schema',
+    C.CONSTRAINT_NAME AS 'Name',
+	FK.TABLE_SCHEMA AS 'FkSchemaName',
+    FK.TABLE_NAME AS 'FkTableName',
+	PK.TABLE_SCHEMA AS 'PkSchemaName',
+    PK.TABLE_NAME AS 'PkTableName'
+FROM
+	INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS AS C
+    INNER JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE AS FK 
+		ON FK.CONSTRAINT_NAME = C.CONSTRAINT_NAME
+    INNER JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE AS PK
+        ON PK.CONSTRAINT_NAME = C.UNIQUE_CONSTRAINT_NAME
+		AND PK.ORDINAL_POSITION = FK.ORDINAL_POSITION
+WHERE PK.TABLE_SCHEMA NOT IN ('sys', 'performance_schema', 'mysql', 'information_schema')
+	AND FK.TABLE_SCHEMA NOT IN ('sys', 'performance_schema', 'mysql', 'information_schema')
+ORDER BY FkTableName, NameFK_prestazione_somministrazione</value>
+  </data>
+  <data name="MYSQL_TABLES_SELECT" xml:space="preserve">
+    <value>SELECT
+	TABLE_CATALOG AS 'Catalog',
+	TABLE_SCHEMA AS 'Schema',
+	TABLE_NAME AS 'Name',
+	TABLE_TYPE AS 'Type'
+FROM INFORMATION_SCHEMA.TABLES
+WHERE TABLE_SCHEMA NOT IN ('sys', 'performance_schema', 'mysql', 'information_schema')</value>
+  </data>
   <data name="TABLES_SELECT" xml:space="preserve">
     <value>SELECT
 	[TABLE_CATALOG] AS [Catalog],

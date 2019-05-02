@@ -187,6 +187,63 @@ namespace Reversio.Core {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to SELECT  C.TABLE_SCHEMA AS &apos;Schema&apos;,
+        ///        C.TABLE_NAME AS &apos;TableName&apos;,
+        ///        C.COLUMN_NAME AS &apos;Name&apos;,
+        ///        C.ORDINAL_POSITION AS &apos;Position&apos;,
+        ///        C.COLUMN_DEFAULT AS &apos;Default&apos;,
+        ///        0 as &apos;IsIdentity&apos;,
+        ///		(CASE WHEN C.IS_NULLABLE = &apos;YES&apos; THEN 1 ELSE 0 END) AS &apos;IsNullable&apos;,
+        ///        LOWER(C.DATA_TYPE) AS &apos;DataType&apos;,
+        ///        C.CHARACTER_MAXIMUM_LENGTH AS &apos;CharacterMaximumLength&apos;,
+        ///        C.NUMERIC_PRECISION AS &apos;NumericPrecision&apos;,
+        ///        C.NUMERIC_SCALE AS &apos;NumericScale&apos;,
+        ///        C.DATETIME_PRECISIO [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string MYSQL_COLUMNS_SELECT {
+            get {
+                return ResourceManager.GetString("MYSQL_COLUMNS_SELECT", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SELECT DISTINCT
+        ///    C.CONSTRAINT_SCHEMA AS &apos;Schema&apos;,
+        ///    C.CONSTRAINT_NAME AS &apos;Name&apos;,
+        ///	FK.TABLE_SCHEMA AS &apos;FkSchemaName&apos;,
+        ///    FK.TABLE_NAME AS &apos;FkTableName&apos;,
+        ///	PK.TABLE_SCHEMA AS &apos;PkSchemaName&apos;,
+        ///    PK.TABLE_NAME AS &apos;PkTableName&apos;
+        ///FROM
+        ///	INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS AS C
+        ///    INNER JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE AS FK 
+        ///		ON FK.CONSTRAINT_NAME = C.CONSTRAINT_NAME
+        ///    INNER JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE AS PK
+        ///        ON PK.CONSTRAINT_NAME = C.UNIQUE_CONSTRAINT_NAME
+        ///		AND PK.ORDI [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string MYSQL_FOREIGN_KEYS_SELECT {
+            get {
+                return ResourceManager.GetString("MYSQL_FOREIGN_KEYS_SELECT", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SELECT
+        ///	TABLE_CATALOG AS &apos;Catalog&apos;,
+        ///	TABLE_SCHEMA AS &apos;Schema&apos;,
+        ///	TABLE_NAME AS &apos;Name&apos;,
+        ///	TABLE_TYPE AS &apos;Type&apos;
+        ///FROM INFORMATION_SCHEMA.TABLES
+        ///WHERE TABLE_SCHEMA NOT IN (&apos;sys&apos;, &apos;performance_schema&apos;, &apos;mysql&apos;, &apos;information_schema&apos;).
+        /// </summary>
+        internal static string MYSQL_TABLES_SELECT {
+            get {
+                return ResourceManager.GetString("MYSQL_TABLES_SELECT", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to SELECT
         ///	[TABLE_CATALOG] AS [Catalog],
         ///	[TABLE_SCHEMA] AS [Schema],
