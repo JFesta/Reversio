@@ -79,13 +79,27 @@ namespace Reversio.Core.SqlEngine
             switch (column.DataType.ToLower())
             {
                 case "tinyint":
-                    return column.IsNullable || (nullableIfDefaultAndNotPk && HasDefaultAndNotPk(column)) ? "byte?" : "byte";
+                    return column.IsNullable || (nullableIfDefaultAndNotPk && HasDefaultAndNotPk(column)) ? "bool?" : "bool";
                 case "smallint":
                     return column.IsNullable || (nullableIfDefaultAndNotPk && HasDefaultAndNotPk(column)) ? "short?" : "short";
                 case "int":
                     return column.IsNullable || (nullableIfDefaultAndNotPk && HasDefaultAndNotPk(column)) ? "int?" : "int";
                 case "bigint":
                     return column.IsNullable || (nullableIfDefaultAndNotPk && HasDefaultAndNotPk(column)) ? "long?" : "long";
+                case "decimal":
+                    return column.IsNullable || (nullableIfDefaultAndNotPk && HasDefaultAndNotPk(column)) ? "decimal?" : "decimal";
+                case "date":
+                case "datetime":
+                    return column.IsNullable || (nullableIfDefaultAndNotPk && HasDefaultAndNotPk(column)) ? "DateTime?" : "DateTime";
+                case "time":
+                    return column.IsNullable || (nullableIfDefaultAndNotPk && HasDefaultAndNotPk(column)) ? "TimeSpan?" : "TimeSpan";
+                case "char":
+                    return (column.CharacterMaximumLength == 36)
+                        ? ((nullableIfDefaultAndNotPk && HasDefaultAndNotPk(column)) ? "Guid?" : "Guid")
+                        : "string";
+                case "varchar":
+                case "text":
+                    return "string";
                 default:
                     throw new Exception("Can't parse column type: " + column.DataType);
             }
@@ -93,42 +107,64 @@ namespace Reversio.Core.SqlEngine
 
         public string ForeignKeyRuleString(string rule)
         {
-            return null;
+            switch (rule)
+            {
+                case ("NO ACTION"):
+                    return "DeleteBehavior.ClientSetNull";
+                case ("CASCADE"):
+                    return "DeleteBehavior.Cascade";
+                case ("SET NULL"):
+                    return "DeleteBehavior.SetNull";
+                case ("SET DEFAULT"):
+                    return "DeleteBehavior.SetNull";
+                default:
+                    return null;
+            }
         }
         
         public string GetFullName(Table table)
         {
-            throw new NotImplementedException();
+            return String.Format("`{0}`.`{1}`", table.Schema, table.Name);
         }
 
         public string GetIdentitySpecifier(Column column)
         {
-            throw new NotImplementedException();
+            return "";
         }
 
         public bool IsString(Column column)
         {
-            throw new NotImplementedException();
+            switch (column.DataType.ToLower())
+            {
+                case "char":
+                case "varchar":
+                case "text":
+                    return true;
+            }
+            return false;
         }
 
         public bool IsUnicode(Column column)
         {
-            throw new NotImplementedException();
-        }
-
-        public bool IsView(Table entity)
-        {
-            throw new NotImplementedException();
+            return true;
         }
 
         public bool TypeMatch(Table table, IEnumerable<string> allowedTypes)
         {
-            return true;
+            return (IsView(table))
+                ? allowedTypes.Contains("view")
+                : allowedTypes.Contains("table");
+        }
+
+        public bool IsView(Table entity)
+        {
+            return String.Equals(entity.Type, "VIEW", StringComparison.InvariantCultureIgnoreCase);
         }
 
         private bool HasDefaultAndNotPk(Column column)
         {
-            return true;
+            return !String.IsNullOrWhiteSpace(column.Default)
+                && (column.Table.Pk == null || !column.Table.Pk.Columns.ContainsKey(column.Position));
         }
     }
 }

@@ -102,6 +102,8 @@ namespace Reversio.Core
         {
             if (_job.Provider.Equals(SqlServerEngine.Provider, StringComparison.InvariantCultureIgnoreCase))
                 return new SqlServerEngine(_job.ConnectionString);
+            else if (_job.Provider.Equals(MySqlEngine.Provider, StringComparison.InvariantCultureIgnoreCase))
+                return new MySqlEngine(_job.ConnectionString);
             else
                 throw new Exception("Data provider not supported: " + _job.Provider);
         }
