@@ -28,8 +28,9 @@ namespace Reversio.Core
 {
     public class PocoEngine
     {
+        private static char[] _breakCharacters = new char[] { ' ', '_' };
         private ISqlEngine _sqlEngine;
-
+        
         public PocoEngine(ISqlEngine sqlEngine)
         {
             _sqlEngine = sqlEngine;
@@ -59,9 +60,9 @@ namespace Reversio.Core
                 };
                 
                 //name replace & resolve
-                poco.Name = Replace(settings.ClassNameReplace, poco.Name);
                 if (settings.ClassNameForcePascalCase)
                     poco.Name = ToPascalCase(poco.Name);
+                poco.Name = Replace(settings.ClassNameReplace, poco.Name);
                 ResolvePocoName(pocos, poco);
 
                 Log.Debug(String.Format("POCO {0} - Assigned name: {1}", entity.Name, poco.Name));
@@ -76,10 +77,10 @@ namespace Reversio.Core
                         CSharpType = _sqlEngine.GetCSharpType(column, settings.PropertyNullableIfDefaultAndNotPk)
                     };
                     column.PocoProperty = property;
-
-                    property.Name = Replace(settings.PropertyNameReplace, property.Name);
+                    
                     if (settings.PropertyNameForcePascalCase)
                         property.Name = ToPascalCase(property.Name);
+                    property.Name = Replace(settings.PropertyNameReplace, property.Name);
                     property.Name = ResolvePropertyName(poco, property, "Property");
 
                     poco.BaseProperties.Add(property);
@@ -307,36 +308,43 @@ namespace Reversio.Core
             var array = input.ToCharArray();
             int start = -1;
 
-            if (Char.IsLower(array[0]))
-                array[0] = Char.ToUpperInvariant(array[0]);
-            for (int i = 0; i < array.Length; i++)
-            {
-                if (Char.IsUpper(array[i]))
+            //while (start < array.Length)
+            //{
+                //first character is always "uppered"
+                if (start < array.Length-1 && Char.IsLower(array[start+1]))
+                    array[start+1] = Char.ToUpperInvariant(array[start+1]);
+
+                for (int i = 0; i < array.Length; i++)
                 {
-                    if (start < 0)
-                        start = i;
-                }
-                else if (start >= 0)
-                {
-                    int end = Char.IsLower(input[i]) ? i - 2 : i - 1;
-                    int length = end - start + 1;
-                    if (end > start && length >= 2)
+                    if (Char.IsUpper(array[i]))
                     {
-                        for (int j = start + 1; j <= end; j++)
-                        {
-                            array[j] = Char.ToLowerInvariant(array[j]);
-                        }
+                        if (start < 0)
+                            start = i;
                     }
-                    start = -1;
+                    else if (_breakCharacters.Contains(array[i]) && i < array.Length-1)
+                        array[i+1] = Char.ToUpperInvariant(array[i+1]);
+                    else if (start >= 0)
+                    {
+                        int end = Char.IsLower(input[i]) ? i - 2 : i - 1;
+                        int length = end - start + 1;
+                        if (end > start && length >= 2)
+                        {
+                            for (int j = start + 1; j <= end; j++)
+                            {
+                                array[j] = Char.ToLowerInvariant(array[j]);
+                            }
+                        }
+                        start = -1;
+                    }
                 }
-            }
-            if (start >= 0 && (array.Length - start) >= 2)
-            {
-                for (int j = start + 1; j < array.Length; j++)
+                if (start >= 0 && (array.Length - start) >= 2)
                 {
-                    array[j] = Char.ToLowerInvariant(array[j]);
+                    for (int j = start + 1; j < array.Length; j++)
+                    {
+                        array[j] = Char.ToLowerInvariant(array[j]);
+                    }
                 }
-            }
+            //}
             return new string(array);
         }
 
