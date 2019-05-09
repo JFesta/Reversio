@@ -210,17 +210,13 @@ namespace Reversio.Core {
         ///   Looks up a localized string similar to SELECT DISTINCT
         ///    C.CONSTRAINT_SCHEMA AS &apos;Schema&apos;,
         ///    C.CONSTRAINT_NAME AS &apos;Name&apos;,
-        ///	FK.TABLE_SCHEMA AS &apos;FkSchemaName&apos;,
-        ///    FK.TABLE_NAME AS &apos;FkTableName&apos;,
-        ///	PK.TABLE_SCHEMA AS &apos;PkSchemaName&apos;,
-        ///    PK.TABLE_NAME AS &apos;PkTableName&apos;
+        ///	C.CONSTRAINT_SCHEMA AS &apos;FkSchemaName&apos;,
+        ///    C.TABLE_NAME AS &apos;FkTableName&apos;,
+        ///	C.CONSTRAINT_SCHEMA AS &apos;PkSchemaName&apos;,
+        ///    C.REFERENCED_TABLE_NAME AS &apos;PkTableName&apos;
         ///FROM
         ///	INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS AS C
-        ///    INNER JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE AS FK 
-        ///		ON FK.CONSTRAINT_NAME = C.CONSTRAINT_NAME
-        ///    INNER JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE AS PK
-        ///        ON PK.CONSTRAINT_NAME = C.UNIQUE_CONSTRAINT_NAME
-        ///		AND PK.ORDI [rest of string was truncated]&quot;;.
+        ///ORDER BY FkTableName, Name.
         /// </summary>
         internal static string MYSQL_FOREIGN_KEYS_SELECT {
             get {

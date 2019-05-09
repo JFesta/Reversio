@@ -247,20 +247,13 @@ WHERE   C.TABLE_SCHEMA NOT IN ('sys', 'performance_schema', 'mysql', 'informatio
     <value>SELECT DISTINCT
     C.CONSTRAINT_SCHEMA AS 'Schema',
     C.CONSTRAINT_NAME AS 'Name',
-	FK.TABLE_SCHEMA AS 'FkSchemaName',
-    FK.TABLE_NAME AS 'FkTableName',
-	PK.TABLE_SCHEMA AS 'PkSchemaName',
-    PK.TABLE_NAME AS 'PkTableName'
+	C.CONSTRAINT_SCHEMA AS 'FkSchemaName',
+    C.TABLE_NAME AS 'FkTableName',
+	C.CONSTRAINT_SCHEMA AS 'PkSchemaName',
+    C.REFERENCED_TABLE_NAME AS 'PkTableName'
 FROM
 	INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS AS C
-    INNER JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE AS FK 
-		ON FK.CONSTRAINT_NAME = C.CONSTRAINT_NAME
-    INNER JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE AS PK
-        ON PK.CONSTRAINT_NAME = C.UNIQUE_CONSTRAINT_NAME
-		AND PK.ORDINAL_POSITION = FK.ORDINAL_POSITION
-WHERE PK.TABLE_SCHEMA NOT IN ('sys', 'performance_schema', 'mysql', 'information_schema')
-	AND FK.TABLE_SCHEMA NOT IN ('sys', 'performance_schema', 'mysql', 'information_schema')
-ORDER BY FkTableName, NameFK_prestazione_somministrazione</value>
+ORDER BY FkTableName, Name</value>
   </data>
   <data name="MYSQL_TABLES_SELECT" xml:space="preserve">
     <value>SELECT
