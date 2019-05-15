@@ -24,6 +24,7 @@ namespace Reversio.Core.Settings
         public string Name { get; set; }
         public string OutputPath { get; set; }
         public bool CleanFolder { get; set; }
+        public string ConcreteCollectionType { get; set; }
         public DbFilterSetting PocosExclude { get; set; }
     }
 }

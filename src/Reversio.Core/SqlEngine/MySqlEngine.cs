@@ -53,6 +53,8 @@ namespace Reversio.Core.SqlEngine
         private void LoadFromDb()
         {
             IEnumerable<Column> columns;
+            IEnumerable<ForeignKey> foreignKeys;
+            //IEnumerable<ForeignKeyColumn> foreignKeyColumns;
 
             //load all
             Log.Debug("Connecting to MySql Database...");
@@ -60,6 +62,8 @@ namespace Reversio.Core.SqlEngine
             {
                 _context = connection.Query<Table>(Queries.MYSQL_TABLES_SELECT);
                 columns = connection.Query<Column>(Queries.MYSQL_COLUMNS_SELECT);
+                foreignKeys = connection.Query<ForeignKey>(Queries.MYSQL_FOREIGN_KEYS_SELECT);
+                //foreignKeyColumns = connection.Query<ForeignKeyColumn>(Queries.FOREIGN_KEY_COLUMNS_SELECT);
             }
 
             //linking entities + columns
@@ -71,6 +75,32 @@ namespace Reversio.Core.SqlEngine
                     column.Table = entity;
                 }
                 Log.Debug(String.Format("{0} [{1}].[{2}]: {3} columns", entity.Type, entity.Schema, entity.Name, entity.Columns == null ? 0 : entity.Columns.Count));
+            }
+
+            //linking foreign keys + foreign key columns
+            foreach (var foreignKey in foreignKeys)
+            {
+                var fkTable = _context.FirstOrDefault(e => e.Schema == foreignKey.FkSchemaName && e.Name == foreignKey.FkTableName);
+                var pkTable = _context.FirstOrDefault(e => e.Schema == foreignKey.PkSchemaName && e.Name == foreignKey.PkTableName);
+                if (fkTable != null && pkTable != null)
+                {
+                    foreignKey.FkTable = fkTable;
+                    if (fkTable.Dependencies == null)
+                        fkTable.Dependencies = new List<ForeignKey>();
+                    fkTable.Dependencies.Add(foreignKey);
+
+                    foreignKey.PkTable = pkTable;
+                    if (pkTable.DependenciesFrom == null)
+                        pkTable.DependenciesFrom = new List<ForeignKey>();
+                    pkTable.DependenciesFrom.Add(foreignKey);
+
+                    //TODO: column specifications for DbContext generation
+                }
+
+                Log.Debug(String.Format("{0} [{1}].[{2}]: from {3} to {4} - {5} columns",
+                    "FK", foreignKey.Schema, foreignKey.Name,
+                    fkTable?.Identifier, pkTable?.Identifier,
+                    foreignKey.Columns == null ? 0 : foreignKey.Columns.Count));
             }
         }
 
@@ -95,7 +125,7 @@ namespace Reversio.Core.SqlEngine
                     return column.IsNullable || (nullableIfDefaultAndNotPk && HasDefaultAndNotPk(column)) ? "TimeSpan?" : "TimeSpan";
                 case "char":
                     return (column.CharacterMaximumLength == 36)
-                        ? ((nullableIfDefaultAndNotPk && HasDefaultAndNotPk(column)) ? "Guid?" : "Guid")
+                        ? (column.IsNullable || (nullableIfDefaultAndNotPk && HasDefaultAndNotPk(column)) ? "Guid?" : "Guid")
                         : "string";
                 case "varchar":
                 case "text":

@@ -57,6 +57,7 @@ namespace Reversio.Cli
         public string OutputPath { get; set; }
         public string StubOutputPath { get; set; }
         public bool CleanFolder { get; set; }
+        public string ConcreteCollectionType { get; set; }
 
         public string ClassName { get; set; }
         public bool ClassAbstract { get; set; }

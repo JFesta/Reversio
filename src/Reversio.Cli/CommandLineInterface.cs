@@ -48,6 +48,12 @@ namespace Reversio.Cli
             ParseArgs(args);
             Init();
 
+
+
+#if DEBUG
+            if (!LoadJobs()) return;
+            LaunchJobs();
+#else
             try
             {
                 if (!LoadJobs()) return;
@@ -60,6 +66,7 @@ namespace Reversio.Cli
                 else
                     Log.Error(err.Message);
             }
+#endif
         }
 
         private void ParseArgs(string[] args)
@@ -181,7 +188,8 @@ namespace Reversio.Cli
                                     Name = step.Name,
                                     OutputPath = step.OutputPath,
                                     CleanFolder = step.CleanFolder,
-                                    PocosExclude = step.Exclude.Convert()
+                                    ConcreteCollectionType = step.ConcreteCollectionType,
+                                    PocosExclude = step.Exclude.Convert(),
                                 };
                                 if (!ValidateStep(pocoWriteStep))
                                     return false;

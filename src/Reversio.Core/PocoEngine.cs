@@ -104,7 +104,7 @@ namespace Reversio.Core
                             IsVirtual = settings.VirtualNavigationProperties,
                             Poco = fk.PkTable.Poco,
                             ForeignKey = fk,
-                            BaseProperties = fk.Columns.Values.Select(c => c.FkColumn.PocoProperty)
+                            BaseProperties = fk.Columns != null ? fk.Columns.Values.Select(c => c.FkColumn.PocoProperty) : null
                         };
                         property.Name = ResolvePropertyName(entity.Poco, property, "Navigation");
                         entity.Poco.OutNavigationProperties.Add(property);
@@ -190,7 +190,11 @@ namespace Reversio.Core
                     indent = indent.AddIndent();
                     foreach (var navigation in poco.InNavigationProperties.Where(p => !p.ForeignKey.IsOne()))
                     {
-                        builder.AppendLine(String.Format("{0}{1} = new HashSet<{2}>();", indent, navigation.Name /*+ "Navigation"*/, navigation.Poco.Name));
+                        builder.AppendLine(String.Format("{0}{1} = new {2}<{3}>();", 
+                            indent, 
+                            navigation.Name,
+                            !String.IsNullOrWhiteSpace(settings.ConcreteCollectionType) ? settings.ConcreteCollectionType : "HashSet",
+                            navigation.Poco.Name));
                     }
                     indent = indent.RemoveIndent();
                     builder.AppendLine(String.Format("{0}}}", indent));
@@ -308,43 +312,40 @@ namespace Reversio.Core
             var array = input.ToCharArray();
             int start = -1;
 
-            //while (start < array.Length)
-            //{
-                //first character is always "uppered"
-                if (start < array.Length-1 && Char.IsLower(array[start+1]))
-                    array[start+1] = Char.ToUpperInvariant(array[start+1]);
+            //first character is always "uppered"
+            if (start < array.Length-1 && Char.IsLower(array[start+1]))
+                array[start+1] = Char.ToUpperInvariant(array[start+1]);
 
-                for (int i = 0; i < array.Length; i++)
+            for (int i = 0; i < array.Length; i++)
+            {
+                if (Char.IsUpper(array[i]))
                 {
-                    if (Char.IsUpper(array[i]))
+                    if (start < 0)
+                        start = i;
+                }
+                else if (_breakCharacters.Contains(array[i]) && i < array.Length-1)
+                    array[i+1] = Char.ToUpperInvariant(array[i+1]);
+                else if (start >= 0)
+                {
+                    int end = Char.IsLower(input[i]) ? i - 2 : i - 1;
+                    int length = end - start + 1;
+                    if (end > start && length >= 2)
                     {
-                        if (start < 0)
-                            start = i;
-                    }
-                    else if (_breakCharacters.Contains(array[i]) && i < array.Length-1)
-                        array[i+1] = Char.ToUpperInvariant(array[i+1]);
-                    else if (start >= 0)
-                    {
-                        int end = Char.IsLower(input[i]) ? i - 2 : i - 1;
-                        int length = end - start + 1;
-                        if (end > start && length >= 2)
+                        for (int j = start + 1; j <= end; j++)
                         {
-                            for (int j = start + 1; j <= end; j++)
-                            {
-                                array[j] = Char.ToLowerInvariant(array[j]);
-                            }
+                            array[j] = Char.ToLowerInvariant(array[j]);
                         }
-                        start = -1;
                     }
+                    start = -1;
                 }
-                if (start >= 0 && (array.Length - start) >= 2)
+            }
+            if (start >= 0 && (array.Length - start) >= 2)
+            {
+                for (int j = start + 1; j < array.Length; j++)
                 {
-                    for (int j = start + 1; j < array.Length; j++)
-                    {
-                        array[j] = Char.ToLowerInvariant(array[j]);
-                    }
+                    array[j] = Char.ToLowerInvariant(array[j]);
                 }
-            //}
+            }
             return new string(array);
         }
 
