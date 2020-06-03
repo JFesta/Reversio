@@ -31,6 +31,10 @@
               "ReplaceWith": ""
             }
           ],
+          "ExcludeProperties": {
+            "ExcludeExact": [],
+            "ExcludeRegex": []
+          },
           "PropertyNameForcePascalCase": true,
           "PropertyNullableIfDefaultAndNotPk": false
         },

@@ -26,6 +26,11 @@ namespace Reversio.Core.Settings
         public IEnumerable<Tuple<string, string>> MatchExact { get; set; }
         public IEnumerable<Regex> MatchRegexes { get; set; }
 
+        public bool IsMatch(string name)
+        {
+            return IsMatch(null, name);
+        }
+
         public bool IsMatch(string schema, string name)
         {
             if (MatchExact != null && MatchExact.Any())

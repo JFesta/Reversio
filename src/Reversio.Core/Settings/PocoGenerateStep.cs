@@ -32,6 +32,7 @@ namespace Reversio.Core.Settings
         public IEnumerable<NameReplaceRegex> ClassNameReplace { get; set; }
         public bool PropertyNameForcePascalCase { get; set; }
         public IEnumerable<NameReplaceRegex> PropertyNameReplace { get; set; }
+        public DbFilterSetting ExcludeProperties { get; set; }
         public bool PropertyNullableIfDefaultAndNotPk { get; set; }
     }
 }

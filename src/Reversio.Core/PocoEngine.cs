@@ -70,6 +70,12 @@ namespace Reversio.Core
                 //properties: creation, name replace & resolve
                 foreach (var column in entity.Columns.Values.OrderBy(c => c.Position))
                 {
+                    if (settings.ExcludeProperties != null
+                        && settings.ExcludeProperties.IsMatch(column.Name))
+                    {
+                        continue;
+                    }
+
                     var property = new PocoBaseProperty()
                     {
                         Name = column.Name,

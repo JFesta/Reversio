@@ -52,6 +52,7 @@ namespace Reversio.Cli
         public List<JsonNameReplaceRegex> ClassNameReplace { get; set; }
         public bool PropertyNameForcePascalCase { get; set; }
         public List<JsonNameReplaceRegex> PropertyNameReplace { get; set; }
+        public JsonDbFilterSetting ExcludeProperties { get; set; }
         public bool PropertyNullableIfDefaultAndNotPk { get; set; }
 
         public string OutputPath { get; set; }

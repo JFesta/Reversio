@@ -170,6 +170,7 @@ namespace Reversio.Cli
                                     ClassNameReplace = step.ClassNameReplace.Select(c => c.Convert()),
                                     PropertyNameForcePascalCase = step.PropertyNameForcePascalCase,
                                     PropertyNameReplace = step.PropertyNameReplace.Select(c => c.Convert()),
+                                    ExcludeProperties = step.ExcludeProperties.Convert(),
                                     PropertyNullableIfDefaultAndNotPk = step.PropertyNullableIfDefaultAndNotPk
                                 };
                                 if (!ValidateStep(pocoGenerateStep))
