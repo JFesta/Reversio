@@ -192,7 +192,7 @@ namespace Reversio.Core
                 indent = indent.AddIndent();
 
                 //constructor
-                if (poco.InNavigationProperties.Any(p => !p.ForeignKey.IsOne()))
+                if (!settings.ExcludeConstructor && poco.InNavigationProperties.Any(p => !p.ForeignKey.IsOne()))
                 {
                     builder.AppendLine(String.Format("{0}public {1}()", indent, poco.Name));
                     builder.AppendLine(String.Format("{0}{{", indent));
