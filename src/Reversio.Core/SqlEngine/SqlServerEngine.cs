@@ -196,8 +196,9 @@ namespace Reversio.Core.SqlEngine
                 case "smalldatetime":
                     return column.IsNullable || (nullableIfDefaultAndNotPk && HasDefaultAndNotPk(column)) ? "DateTime?" : "DateTime";
                 case "time":
-                case "datetimeoffset":
                     return column.IsNullable || (nullableIfDefaultAndNotPk && HasDefaultAndNotPk(column)) ? "TimeSpan?" : "TimeSpan";
+                case "datetimeoffset":
+                    return column.IsNullable || (nullableIfDefaultAndNotPk && HasDefaultAndNotPk(column)) ? "DateTimeOffset?" : "DateTimeOffset";
                 case "char":
                 case "varchar":
                 case "text":
