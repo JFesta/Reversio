@@ -129,6 +129,7 @@ namespace Reversio.Core.SqlEngine
                         : "string";
                 case "varchar":
                 case "text":
+                case "json":
                     return "string";
                 default:
                     throw new Exception("Can't parse column type: " + column.DataType);
