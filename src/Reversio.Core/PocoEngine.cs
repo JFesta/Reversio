@@ -150,8 +150,11 @@ namespace Reversio.Core
                 var builder = new StringBuilder();
 
                 //writing info
-                builder.AppendLine(InfoText.GeneratedCodeText);
-                builder.AppendLine();
+                if (!settings.ExcludeInfoText)
+                {
+                    builder.AppendLine(InfoText.GeneratedCodeText);
+                    builder.AppendLine();
+                }
 
                 builder.AppendLine("using System;");
                 builder.AppendLine("using System.Text;");

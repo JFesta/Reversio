@@ -39,10 +39,11 @@
           "StepType": "PocoWrite",
           "OutputPath": "./",
           "CleanFolder": true,
-          "ConcreteCollectionType":  "HashSet",
+          "ExcludeInfoText": false,
+          "ConcreteCollectionType": "HashSet",
           "Exclude": {
-            "ExcludeExact": [],
-            "ExcludeRegex": []
+              "ExcludeExact": [],
+              "ExcludeRegex": []
           }
         },
         {

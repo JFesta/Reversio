@@ -188,6 +188,7 @@ namespace Reversio.Cli
                                     Name = step.Name,
                                     OutputPath = step.OutputPath,
                                     CleanFolder = step.CleanFolder,
+                                    ExcludeInfoText = step.ExcludeInfoText,
                                     ConcreteCollectionType = step.ConcreteCollectionType,
                                     PocosExclude = step.Exclude.Convert(),
                                 };
