@@ -275,7 +275,7 @@ namespace Reversio.Core
             }
             else if (poco == fk.FkTable.Poco)
             {
-                name = fk.PkTable.Poco.Name;
+                name = "Parent";
             }
             else
             {
