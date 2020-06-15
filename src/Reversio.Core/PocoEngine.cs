@@ -109,7 +109,7 @@ namespace Reversio.Core
                     {
                         var property = new PocoNavigationProperty()
                         {
-                            Name = AssignNavigationPropertyName(settings, entity.Poco, fk),
+                            Name = AssignNavigationPropertyName(settings, entity.Poco, fk, true),
                             IsVirtual = settings.VirtualNavigationProperties,
                             Poco = fk.PkTable.Poco,
                             ForeignKey = fk,
@@ -127,7 +127,7 @@ namespace Reversio.Core
                     {
                         var property = new PocoNavigationProperty()
                         {
-                            Name = AssignNavigationPropertyName(settings, entity.Poco, fk),
+                            Name = AssignNavigationPropertyName(settings, entity.Poco, fk, false),
                             IsVirtual = settings.VirtualNavigationProperties,
                             Poco = fk.FkTable.Poco,
                             ForeignKey = fk
@@ -268,7 +268,7 @@ namespace Reversio.Core
             poco.Name = name;
         }
 
-        private string AssignNavigationPropertyName(PocoGenerateStep settings, Poco poco, ForeignKey fk)
+        private string AssignNavigationPropertyName(PocoGenerateStep settings, Poco poco, ForeignKey fk, bool to)
         {
             string name;
             if ((poco == fk.FkTable.Poco && fk.FkTable.Dependencies != null && fk.FkTable.Dependencies.Count(f => f.PkTable == fk.PkTable) > 1)
@@ -276,9 +276,11 @@ namespace Reversio.Core
             {
                 name = fk.Name;
             }
-            else if (poco == fk.FkTable.Poco)
+            else if (poco == fk.FkTable.Poco && poco == fk.PkTable.Poco)
             {
-                name = "Parent";
+                name = to
+                    ? (fk.IsOne() ? "Parents" : "Parent")
+                    : (fk.IsOne() ? "Child" : "Children");
             }
             else
             {
