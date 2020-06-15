@@ -31,11 +31,13 @@ namespace Reversio.Core.SqlEngine
     {
         public static string Provider = "MySql.Data.MySqlClient";
 
+        private GlobalSettings _globalSettings;
         private string _connectionString;
         private IEnumerable<Table> _context;
 
-        public MySqlEngine(string connectionString)
+        public MySqlEngine(GlobalSettings globalSettings, string connectionString)
         {
+            _globalSettings = globalSettings;
             _connectionString = connectionString;
         }
 

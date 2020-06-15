@@ -30,11 +30,13 @@ namespace Reversio.Core.SqlEngine
     {
         public static string Provider = "System.Data.SqlClient";
 
+        private GlobalSettings _globalSettings;
         private string _connectionString;
         private IEnumerable<Table> _context;
 
-        public SqlServerEngine(string connectionString)
+        public SqlServerEngine(GlobalSettings globalSettings, string connectionString)
         {
+            _globalSettings = globalSettings;
             _connectionString = connectionString;
         }
 
@@ -268,7 +270,9 @@ namespace Reversio.Core.SqlEngine
 
         public string GetIdentitySpecifier(Column column)
         {
-            return ".UseSqlServerIdentityColumn()";
+            return (_globalSettings.IsVersionAtLeast(3, 1))
+                ? ".UseIdentityColumn()"
+                : ".UseSqlServerIdentityColumn()";
         }
 
         public string ForeignKeyRuleString(string rule)

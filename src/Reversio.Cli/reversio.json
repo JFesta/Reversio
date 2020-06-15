@@ -1,4 +1,8 @@
 ﻿{
+  "Globals": {
+    "NetCoreVersion": "3.1", //default: "3.1"
+    "ExcludeInfoText": false
+  },
   "Jobs": [
     {
       "Provider": "System.Data.SqlClient",
@@ -44,8 +48,7 @@
           "OutputPath": "./",
           "CleanFolder": true,
           "ExcludeConstructor": false,
-          "ExcludeInfoText": false,
-          "ConcreteCollectionType": "HashSet",
+          "ConcreteCollectionType": "HashSet", //default: "HashSet"
           "Exclude": {
             "ExcludeExact": [],
             "ExcludeRegex": []

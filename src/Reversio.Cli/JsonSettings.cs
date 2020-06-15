@@ -24,7 +24,14 @@ namespace Reversio.Cli
 {
     public class JsonSettings
     {
+        public JsonGlobals Globals { get; set; }
         public List<JsonJob> Jobs { get; set; }
+    }
+
+    public class JsonGlobals
+    {
+        public string NetCoreVersion { get; set; }
+        public bool ExcludeInfoText { get; set; }
     }
 
     public class JsonJob
@@ -59,7 +66,6 @@ namespace Reversio.Cli
         public string StubOutputPath { get; set; }
         public bool CleanFolder { get; set; }
         public bool ExcludeConstructor { get; set; }
-        public bool ExcludeInfoText { get; set; }
         public string ConcreteCollectionType { get; set; }
 
         public string ClassName { get; set; }

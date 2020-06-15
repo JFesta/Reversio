@@ -14,9 +14,9 @@
 */
 
 using Reversio.Core;
-using Reversio.Core.Logging;
 using Reversio.Core.Settings;
 using Reversio.Core.Utils;
+using Reversio.Core.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -30,6 +30,7 @@ namespace Reversio.Cli
         private bool _verbose = false;
         private List<string> _settingPaths;
 
+        private GlobalSettings _globalSettings;
         private List<Job> _jobs;
 
         public void Execute(string[] args)
@@ -102,12 +103,24 @@ namespace Reversio.Cli
                 return false;
             }
 
+            _globalSettings = new GlobalSettings()
+            {
+                NetCoreVersion = GlobalSettings.DefaultNetCoreVersion,
+                ExcludeInfoText = false
+            };
+            
             Log.Information(String.Format("Parsing {0} setting files", _settingPaths.Count()));
             foreach (var inputPath in _settingPaths)
             {
                 var path = Path.GetFullPath(inputPath);
                 Log.Debug(String.Format("Parsing file {0}", path));
+
                 var settings = Newtonsoft.Json.JsonConvert.DeserializeObject<JsonSettings>(File.ReadAllText(path));
+                if (settings.Globals != null)
+                {
+                    _globalSettings.NetCoreVersion = settings.Globals?.NetCoreVersion ?? _globalSettings.NetCoreVersion;
+                    _globalSettings.ExcludeInfoText = settings.Globals?.ExcludeInfoText ?? _globalSettings.ExcludeInfoText;
+                }
 
                 _jobs = new List<Job>();
                 int i = 1;
@@ -190,7 +203,6 @@ namespace Reversio.Cli
                                     OutputPath = step.OutputPath,
                                     CleanFolder = step.CleanFolder,
                                     ExcludeConstructor = step.ExcludeConstructor,
-                                    ExcludeInfoText = step.ExcludeInfoText,
                                     ConcreteCollectionType = step.ConcreteCollectionType,
                                     PocosExclude = step.Exclude.Convert(),
                                 };
@@ -309,7 +321,7 @@ namespace Reversio.Cli
             {
                 Log.Information(String.Format("Launching job #{0} from settings file {1}", i, job.SettingsFile));
                 Directory.SetCurrentDirectory(job.WorkingDirectory);
-                var engine = new ReversioEngine(job);
+                var engine = new ReversioEngine(_globalSettings, job);
                 engine.Execute();
                 i++;
             }

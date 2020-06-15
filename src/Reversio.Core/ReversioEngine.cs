@@ -27,6 +27,8 @@ namespace Reversio.Core
     public class ReversioEngine
     {
         public Job _job;
+
+        private GlobalSettings _globalSettings;
         private List<Flow> _flows = new List<Flow>();
 
         private class Flow
@@ -36,15 +38,16 @@ namespace Reversio.Core
             public bool Open { get; set; } = true;
         }
 
-        public ReversioEngine(Job job)
+        public ReversioEngine(GlobalSettings globalSettings, Job job)
         {
+            _globalSettings = globalSettings;
             _job = job;
         }
 
         public void Execute()
         {
             var sqlEngine = GetEngine();
-            var pocoEngine = new PocoEngine(sqlEngine);
+            var pocoEngine = new PocoEngine(_globalSettings, sqlEngine);
             var currentFlow = new Flow();
             //bool last = false;
             foreach (var step in _job.Steps)
@@ -88,7 +91,7 @@ namespace Reversio.Core
                     case DbContextStep dbContext:
                         Log.Information(String.Format("Executing DbContext step \"{0}\" to output path {1}", 
                             dbContext.Name, dbContext.OutputPath));
-                        var dbContextEngine = new DbContextEngine(dbContext, sqlEngine);
+                        var dbContextEngine = new DbContextEngine(_globalSettings, dbContext, sqlEngine);
                         dbContextEngine.WriteDbContext(_flows.SelectMany(f => f.Pocos));
                         //last = true;
                         break;
@@ -101,9 +104,9 @@ namespace Reversio.Core
         private ISqlEngine GetEngine()
         {
             if (_job.Provider.Equals(SqlServerEngine.Provider, StringComparison.InvariantCultureIgnoreCase))
-                return new SqlServerEngine(_job.ConnectionString);
+                return new SqlServerEngine(_globalSettings, _job.ConnectionString);
             else if (_job.Provider.Equals(MySqlEngine.Provider, StringComparison.InvariantCultureIgnoreCase))
-                return new MySqlEngine(_job.ConnectionString);
+                return new MySqlEngine(_globalSettings, _job.ConnectionString);
             else
                 throw new Exception("Data provider not supported: " + _job.Provider);
         }

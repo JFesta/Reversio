@@ -13,10 +13,10 @@
  * along with Reversio. If not, see <http://www.gnu.org/licenses/>.
 */
 
-using Reversio.Core.Logging;
 using Reversio.Core.Settings;
 using Reversio.Core.SqlEngine;
 using Reversio.Core.Utils;
+using Reversio.Core.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -27,11 +27,13 @@ namespace Reversio.Core
 {
     public class DbContextEngine
     {
+        private GlobalSettings _globalSettings;
         private DbContextStep _settings;
         private ISqlEngine _sqlEngine;
 
-        public DbContextEngine(DbContextStep settings, ISqlEngine sqlEngine)
+        public DbContextEngine(GlobalSettings globalSettings, DbContextStep settings, ISqlEngine sqlEngine)
         {
+            _globalSettings = globalSettings;
             _settings = settings;
             _sqlEngine = sqlEngine;
         }
@@ -175,8 +177,11 @@ namespace Reversio.Core
         private void WriteHeader(StringBuilder builder, ref string indent, IEnumerable<Poco> pocos = null)
         {
             //writing info
-            builder.AppendLine(InfoText.GeneratedCodeText);
-            builder.AppendLine();
+            if (!_globalSettings.ExcludeInfoText)
+            {
+                builder.AppendLine(InfoText.GeneratedCodeText);
+                builder.AppendLine();
+            }
 
             //usings
             builder.AppendLine("using System;");

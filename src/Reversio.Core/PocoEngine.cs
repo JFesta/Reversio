@@ -14,10 +14,10 @@
 */
 
 using Reversio.Core.Entities;
-using Reversio.Core.Logging;
 using Reversio.Core.Settings;
 using Reversio.Core.SqlEngine;
 using Reversio.Core.Utils;
+using Reversio.Core.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -29,10 +29,13 @@ namespace Reversio.Core
     public class PocoEngine
     {
         private static char[] _breakCharacters = new char[] { ' ', '_' };
+
+        private GlobalSettings _globalSettings;
         private ISqlEngine _sqlEngine;
         
-        public PocoEngine(ISqlEngine sqlEngine)
+        public PocoEngine(GlobalSettings globalSettings, ISqlEngine sqlEngine)
         {
+            _globalSettings = globalSettings;
             _sqlEngine = sqlEngine;
         }
 
@@ -156,7 +159,7 @@ namespace Reversio.Core
                 var builder = new StringBuilder();
 
                 //writing info
-                if (!settings.ExcludeInfoText)
+                if (!_globalSettings.ExcludeInfoText)
                 {
                     builder.AppendLine(InfoText.GeneratedCodeText);
                     builder.AppendLine();
