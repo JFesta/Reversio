@@ -240,11 +240,12 @@ namespace Reversio.Core
             if (poco.Table.Pk != null && poco.Table.Pk.Columns.Any())
             {
                 if (poco.Table.Pk.Columns.Count == 1)
-                    builder.AppendLine(String.Format("{0}entity.HasKey(e => e.{1});", indent, poco.Table.Pk.Columns.Values.First().ColumnName));
+                    builder.AppendLine(String.Format("{0}entity.HasKey(e => e.{1});", indent, 
+                        poco.BaseProperties.First(p => p.Column == poco.Table.Pk.Columns.Values.First().Column).Name));
                 else
                     builder.AppendLine(String.Format("{0}entity.HasKey(e => new {{ {1} }});",
                         indent,
-                        String.Join(", ", poco.Table.Pk.Columns.Values.OrderBy(c => c.Position).Select(c => String.Concat("e.", c.ColumnName)))));
+                        String.Join(", ", poco.Table.Pk.Columns.Values.OrderBy(c => c.Position).Select(c => String.Concat("e.", poco.BaseProperties.First(p => p.Column == c.Column).Name)))));
             }
 
             //indices
