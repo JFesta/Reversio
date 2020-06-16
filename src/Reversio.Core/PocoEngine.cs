@@ -284,7 +284,7 @@ namespace Reversio.Core
             }
             else
             {
-                name = fk.FkTable.Poco.Name;
+                name = to ? fk.PkTable.Poco.Name : fk.FkTable.Poco.Name;
             }
 
             if (settings.PropertyNameForcePascalCase)
