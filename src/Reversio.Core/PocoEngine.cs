@@ -216,6 +216,9 @@ namespace Reversio.Core
                 //properties
                 foreach (var property in poco.BaseProperties)
                 {
+                    if (settings.ExcludeProperties != null
+                        && settings.ExcludeProperties.IsMatch(property.Column.Name))
+                        continue;
                     builder.AppendLine(String.Format("{0}public {1} {2} {{ get; set; }}", indent, property.CSharpType, property.Name));
                 }
 

@@ -157,7 +157,7 @@ namespace Reversio.Cli
                                     Name = step.Name,
                                     EntityTypes = step.EntityTypes.Select(s => s?.ToLowerInvariant()),
                                     Schemas = step.Schemas?.Select(s => s?.ToLowerInvariant()),
-                                    Exclude = step.Exclude.Convert()
+                                    Exclude = (step.Exclude != null) ? step.Exclude.Convert() : null
                                 };
                                 if (!ValidateStep(loadStep))
                                     return false;
@@ -183,7 +183,7 @@ namespace Reversio.Cli
                                     ClassNameReplace = step.ClassNameReplace.Select(c => c.Convert()),
                                     PropertyNameForcePascalCase = step.PropertyNameForcePascalCase,
                                     PropertyNameReplace = step.PropertyNameReplace.Select(c => c.Convert()),
-                                    ExcludeProperties = step.ExcludeProperties.Convert(),
+                                    ExcludeProperties = (step.ExcludeProperties != null) ? step.ExcludeProperties.Convert() : null,
                                     PropertyNullableIfDefaultAndNotPk = step.PropertyNullableIfDefaultAndNotPk
                                 };
                                 if (!ValidateStep(pocoGenerateStep))
@@ -204,7 +204,8 @@ namespace Reversio.Cli
                                     CleanFolder = step.CleanFolder,
                                     ExcludeConstructor = step.ExcludeConstructor,
                                     ConcreteCollectionType = step.ConcreteCollectionType,
-                                    PocosExclude = step.Exclude.Convert(),
+                                    PocosExclude = (step.Exclude != null) ? step.Exclude.Convert() : null,
+                                    ExcludeProperties = (step.ExcludeProperties != null) ? step.ExcludeProperties.Convert() : null
                                 };
                                 if (!ValidateStep(pocoWriteStep))
                                     return false;

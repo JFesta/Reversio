@@ -27,5 +27,6 @@ namespace Reversio.Core.Settings
         public bool ExcludeConstructor { get; set; }
         public string ConcreteCollectionType { get; set; }
         public DbFilterSetting PocosExclude { get; set; }
+        public DbFilterSetting ExcludeProperties { get; set; }
     }
 }
