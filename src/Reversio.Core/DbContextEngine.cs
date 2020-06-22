@@ -277,13 +277,22 @@ namespace Reversio.Core
 
                 if (property.Column.DataType.Equals("date", StringComparison.InvariantCultureIgnoreCase)
                     || property.Column.DataType.Equals("datetime", StringComparison.InvariantCultureIgnoreCase)
+                    || property.Column.DataType.Equals("time", StringComparison.InvariantCultureIgnoreCase)
                     || property.Column.DataType.Equals("money", StringComparison.InvariantCultureIgnoreCase)
-                    || property.Column.DataType.Equals("time", StringComparison.InvariantCultureIgnoreCase))
+                    || property.Column.DataType.Equals("smallmoney", StringComparison.InvariantCultureIgnoreCase)
+                    || property.Column.DataType.Equals("float", StringComparison.InvariantCultureIgnoreCase)
+                    || property.Column.DataType.Equals("real", StringComparison.InvariantCultureIgnoreCase))
                 {
                     if (property.Column.DateTimePrecision != null)
                         directives.Add(String.Format(".HasColumnType(\"{0}({1})\")", property.Column.DataType, property.Column.DateTimePrecision));
                     else
                         directives.Add(String.Format(".HasColumnType(\"{0}\")", property.Column.DataType));
+                }
+                if (property.Column.DataType.Equals("decimal", StringComparison.InvariantCultureIgnoreCase)
+                    || property.Column.DataType.Equals("numeric", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    directives.Add(String.Format(".HasColumnType(\"{0}({1},{2})\")", 
+                        property.Column.DataType, property.Column.NumericPrecision, property.Column.NumericScale));
                 }
 
                 if (_sqlEngine.IsString(property.Column))
