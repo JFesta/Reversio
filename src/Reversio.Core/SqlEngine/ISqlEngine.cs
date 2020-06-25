@@ -26,7 +26,9 @@ namespace Reversio.Core.SqlEngine
         IEnumerable<Table> Load(LoadStep settings);
 
         string GetCSharpType(Column column, bool nullableIfDefaultAndNotPk);
+        bool IsTable(Table entity);
         bool IsView(Table entity);
+        bool IsType(Table entity);
         bool IsString(Column column);
         bool IsUnicode(Column column);
         string GetIdentitySpecifier(Column column);

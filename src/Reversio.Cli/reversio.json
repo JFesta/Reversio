@@ -11,7 +11,7 @@
         {
           "Name": "Load",
           "StepType": "Load",
-          "EntityTypes": [ "Table", "View" ],
+          "EntityTypes": [ "Table", "View", "Type" ], //"Type" available only for SQL SERVER
           "Schemas": [],
           "Exclude": {
             "ExcludeExact": [],

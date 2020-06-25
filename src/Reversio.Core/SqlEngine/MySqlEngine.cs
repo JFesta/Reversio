@@ -189,9 +189,19 @@ namespace Reversio.Core.SqlEngine
                 : allowedTypes.Contains("table");
         }
 
+        public bool IsTable(Table entity)
+        {
+            return !String.Equals(entity.Type, "VIEW", StringComparison.InvariantCultureIgnoreCase);
+        }
+
         public bool IsView(Table entity)
         {
             return String.Equals(entity.Type, "VIEW", StringComparison.InvariantCultureIgnoreCase);
+        }
+
+        public bool IsType(Table entity)
+        {
+            return false;
         }
 
         private bool HasDefaultAndNotPk(Column column)

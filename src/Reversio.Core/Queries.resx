@@ -133,7 +133,8 @@
         (CASE WHEN COLUMNPROPERTY(OBJECT_ID([TABLE_SCHEMA] + '.' + [TABLE_NAME]), [COLUMN_NAME], 'GeneratedAlwaysType') = 1 THEN 1 ELSE 0 END) AS [GeneratedAlwaysType]
 FROM    INFORMATION_SCHEMA.COLUMNS C
 WHERE   C.[TABLE_NAME] NOT IN ('EdmMetadata', '__MigrationHistory', '__RefactorLog')
-        AND C.[TABLE_NAME] NOT LIKE 'sysdiagram%'</value>
+        AND C.[TABLE_NAME] NOT LIKE 'sysdiagram%'
+		AND [TABLE_SCHEMA] != 'sys'</value>
   </data>
   <data name="COLUMNS_SELECT_BY_TABLE" xml:space="preserve">
     <value>SELECT DISTINCT
@@ -154,6 +155,24 @@ FROM
         ON PK.CONSTRAINT_NAME = C.UNIQUE_CONSTRAINT_NAME
 		AND PK.ORDINAL_POSITION = FK.ORDINAL_POSITION
 ORDER BY FK.TABLE_NAME, FK.COLUMN_NAME</value>
+  </data>
+  <data name="COLUMNS_TABLE_TYPES_SELECT" xml:space="preserve">
+    <value>SELECT 
+	SC.[name] AS [Schema],
+	TT.[name] AS [TableName],
+	C.[name] AS [Name],
+	C.[column_id] AS [Position],
+	C.[is_nullable] AS [IsNullable],
+	ST.[name] AS [Datatype], 
+	C.[max_length] AS [CharacterMaximumLength],
+	C.[precision] AS [NumericPrecision],
+	C.[scale] AS [NumericScale],
+    C.[precision] AS [DateTimePrecision]
+FROM sys.table_types TT
+	INNER JOIN sys.schemas SC ON SC.[schema_id] = TT.[schema_id]
+	INNER JOIN sys.columns C ON C.[object_id] = TT.[type_table_object_id]
+	INNER JOIN sys.systypes ST ON (ST.[xusertype] = C.[system_type_id] AND ST.[uid] = 4)
+ORDER BY TT.[name], C.[column_id]</value>
   </data>
   <data name="FOREIGN_KEYS_SELECT" xml:space="preserve">
     <value>SELECT DISTINCT
@@ -272,6 +291,7 @@ WHERE TABLE_SCHEMA NOT IN ('sys', 'performance_schema', 'mysql', 'information_sc
 	[TABLE_TYPE] AS [Type]
 FROM INFORMATION_SCHEMA.TABLES
 WHERE [TABLE_NAME] NOT IN ('EdmMetadata', '__MigrationHistory', '__RefactorLog')
+AND [TABLE_SCHEMA] != 'sys'
 AND [TABLE_NAME] NOT LIKE 'sysdiagram%'</value>
   </data>
 </root>

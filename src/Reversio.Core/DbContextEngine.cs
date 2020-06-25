@@ -215,9 +215,9 @@ namespace Reversio.Core
 
         private void WriteEntity(StringBuilder builder, ref string indent, string modelBuilderName, List<Tuple<Poco, string>> stubs, Poco poco)
         {
-            if (!_sqlEngine.IsView(poco.Table) && poco.Table.Pk != null)
+            if (_sqlEngine.IsTable(poco.Table) && poco.Table.Pk != null)
                 builder.AppendLine(String.Format("{0}{1}.Entity<{2}>(entity =>", indent, modelBuilderName, poco.Name));
-            else
+            else if (_sqlEngine.IsView(poco.Table))
                 builder.AppendLine(String.Format("{0}{1}.Query<{2}>(entity =>", indent, modelBuilderName, poco.Name));
 
             builder.AppendLine(String.Format("{0}{{", indent));
@@ -226,14 +226,19 @@ namespace Reversio.Core
             //entity name
             if (_sqlEngine.IsView(poco.Table))
                 builder.AppendLine(String.Format("{0}entity.ToView(\"{1}\", \"{2}\");", indent, poco.Table.Name, poco.Table.Schema));
-            else if (poco.Table.Pk != null)
-                builder.AppendLine(String.Format("{0}entity.ToTable(\"{1}\", \"{2}\");", indent, poco.Table.Name, poco.Table.Schema));
-            else
+            else if (_sqlEngine.IsTable(poco.Table))
             {
-                //mandatory pre-stub
-                string stub = String.Concat(poco.Name, "Query");
-                stubs.Add(new Tuple<Poco, string>(poco, stub));
-                builder.AppendLine(String.Format("{0}{1}(entity);", indent, stub));
+                if (poco.Table.Pk != null)
+                {
+                    builder.AppendLine(String.Format("{0}entity.ToTable(\"{1}\", \"{2}\");", indent, poco.Table.Name, poco.Table.Schema));
+                }
+                else
+                {
+                    //mandatory pre-stub
+                    string stub = String.Concat(poco.Name, "Query");
+                    stubs.Add(new Tuple<Poco, string>(poco, stub));
+                    builder.AppendLine(String.Format("{0}{1}(entity);", indent, stub));
+                }
             }
 
             //pk
@@ -430,16 +435,14 @@ namespace Reversio.Core
 
         private IEnumerable<Poco> FilterEntities(IEnumerable<Poco> pocos)
         {
-            return pocos.Where(e => 
-                !_sqlEngine.IsView(e.Table) && e.Table.Pk != null)
-            .OrderBy(e => e.Name);
+            return pocos.Where(e => _sqlEngine.IsTable(e.Table) && e.Table.Pk != null)
+                .OrderBy(e => e.Name);
         }
 
         private IEnumerable<Poco> FilterQueryTables(IEnumerable<Poco> pocos)
         {
-            return pocos.Where(e =>
-                !_sqlEngine.IsView(e.Table) && e.Table.Pk == null)
-            .OrderBy(e => e.Name);
+            return pocos.Where(e => _sqlEngine.IsTable(e.Table) && e.Table.Pk == null)
+                .OrderBy(e => e.Name);
         }
 
         private IEnumerable<Poco> FilterQueryViews(IEnumerable<Poco> pocos)

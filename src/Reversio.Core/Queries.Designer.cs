@@ -100,6 +100,29 @@ namespace Reversio.Core {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to SELECT 
+        ///	SC.[name] AS [Schema],
+        ///	TT.[name] AS [TableName],
+        ///	C.[name] AS [Name],
+        ///	C.[column_id] AS [Position],
+        ///	C.[is_nullable] AS [IsNullable],
+        ///	ST.[name] AS [Datatype], 
+        ///	C.[max_length] AS [CharacterMaximumLength],
+        ///	C.[precision] AS [NumericPrecision],
+        ///	C.[scale] AS [NumericScale],
+        ///    C.[precision] AS [DateTimePrecision]
+        ///FROM sys.table_types TT
+        ///	INNER JOIN sys.schemas SC ON SC.[schema_id] = TT.[schema_id]
+        ///	INNER JOIN sys.columns C ON C.[object_id] = TT.[type_table_object_id]
+        ///	INNER JOIN sys. [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string COLUMNS_TABLE_TYPES_SELECT {
+            get {
+                return ResourceManager.GetString("COLUMNS_TABLE_TYPES_SELECT", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to SELECT DISTINCT
         ///    C.CONSTRAINT_SCHEMA AS [Schema],
         ///    C.[CONSTRAINT_NAME] AS [Name],
@@ -247,6 +270,7 @@ namespace Reversio.Core {
         ///	[TABLE_TYPE] AS [Type]
         ///FROM INFORMATION_SCHEMA.TABLES
         ///WHERE [TABLE_NAME] NOT IN (&apos;EdmMetadata&apos;, &apos;__MigrationHistory&apos;, &apos;__RefactorLog&apos;)
+        ///AND [TABLE_SCHEMA] != &apos;sys&apos;
         ///AND [TABLE_NAME] NOT LIKE &apos;sysdiagram%&apos;.
         /// </summary>
         internal static string TABLES_SELECT {

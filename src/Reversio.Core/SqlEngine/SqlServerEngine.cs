@@ -32,7 +32,7 @@ namespace Reversio.Core.SqlEngine
 
         private GlobalSettings _globalSettings;
         private string _connectionString;
-        private IEnumerable<Table> _context;
+        private List<Table> _context;
 
         public SqlServerEngine(GlobalSettings globalSettings, string connectionString)
         {
@@ -43,7 +43,7 @@ namespace Reversio.Core.SqlEngine
         public IEnumerable<Table> Load(LoadStep settings)
         {
             if (_context == null)
-                LoadFromDb();
+                LoadFromDb(settings);
 
             //bool filterSchemas = (settings.Schemas == null || settings.Schemas.Any(s => !String.IsNullOrWhiteSpace(s)));
 
@@ -53,24 +53,52 @@ namespace Reversio.Core.SqlEngine
                 .Where(e => !settings.Exclude.IsMatch(e.Schema, e.Name));
         }
 
-        private void LoadFromDb()
+        private void LoadFromDb(LoadStep settings)
         {
-            IEnumerable<Column> columns;
-            IEnumerable<ForeignKey> foreignKeys;
-            IEnumerable<ForeignKeyColumn> foreignKeyColumns;
-            IEnumerable<Index> indices;
-            IEnumerable<IndexColumn> indexColumns;
+            List<Column> columns;
+            IEnumerable<ForeignKey> foreignKeys = Enumerable.Empty<ForeignKey>();
+            IEnumerable<ForeignKeyColumn> foreignKeyColumns = Enumerable.Empty<ForeignKeyColumn>();
+            IEnumerable<Index> indices = Enumerable.Empty<Index>();
+            IEnumerable<IndexColumn> indexColumns = Enumerable.Empty<IndexColumn>();
             
             //load all
             Log.Debug("Connecting to SQL Server Database...");
             using (var connection = new SqlConnection(_connectionString))
             {
-                _context = connection.Query<Table>(Queries.TABLES_SELECT);
-                columns = connection.Query<Column>(Queries.COLUMNS_SELECT);
-                foreignKeys = connection.Query<ForeignKey>(Queries.FOREIGN_KEYS_SELECT);
-                foreignKeyColumns = connection.Query<ForeignKeyColumn>(Queries.FOREIGN_KEY_COLUMNS_SELECT);
-                indices = connection.Query<Index>(Queries.INDICES_SELECT);
-                indexColumns = connection.Query<IndexColumn>(Queries.INDEX_COLUMNS_SELECT);
+                _context = new List<Table>();
+                columns = new List<Column>();
+                if (settings.EntityTypes.Contains("table") || settings.EntityTypes.Contains("view"))
+                {
+                    _context.AddRange(connection.Query<Table>(Queries.TABLES_SELECT));
+                    columns.AddRange(connection.Query<Column>(Queries.COLUMNS_SELECT));
+                }
+                
+                if (settings.EntityTypes.Contains("type"))
+                {
+                    var tableTypeColumns = connection.Query<Column>(Queries.COLUMNS_TABLE_TYPES_SELECT);
+                    var newTables = tableTypeColumns.GroupBy(c => c.TableName)
+                        .Select(n =>
+                        {
+                            var first = n.First();
+                            return new Table()
+                            {
+                                //Catalog =
+                                Schema = first.Schema,
+                                Name = first.TableName,
+                                Type = "TYPE"
+                            };
+                        });
+                    _context.AddRange(newTables);
+                    columns.AddRange(tableTypeColumns);
+                }
+
+                if (settings.EntityTypes.Contains("table"))
+                {
+                    foreignKeys = connection.Query<ForeignKey>(Queries.FOREIGN_KEYS_SELECT);
+                    foreignKeyColumns = connection.Query<ForeignKeyColumn>(Queries.FOREIGN_KEY_COLUMNS_SELECT);
+                    indices = connection.Query<Index>(Queries.INDICES_SELECT);
+                    indexColumns = connection.Query<IndexColumn>(Queries.INDEX_COLUMNS_SELECT);
+                }
             }
 
             //linking entities + columns
@@ -231,14 +259,28 @@ namespace Reversio.Core.SqlEngine
 
         public bool TypeMatch(Table table, IEnumerable<string> allowedTypes)
         {
-            return (IsView(table))
-                ? allowedTypes.Contains("view")
-                : allowedTypes.Contains("table");
+            if (IsTable(table))
+                return allowedTypes.Contains("table");
+            if (IsView(table))
+                return allowedTypes.Contains("view");
+            if (IsType(table))
+                return allowedTypes.Contains("type");
+            return false;
+        }
+
+        public bool IsTable(Table entity)
+        {
+            return String.Equals(entity.Type, "BASE TABLE", StringComparison.InvariantCultureIgnoreCase);
         }
 
         public bool IsView(Table entity)
         {
             return String.Equals(entity.Type, "VIEW", StringComparison.InvariantCultureIgnoreCase);
+        }
+
+        public bool IsType(Table entity)
+        {
+            return String.Equals(entity.Type, "TYPE", StringComparison.InvariantCultureIgnoreCase);
         }
 
         public bool IsString(Column column)
